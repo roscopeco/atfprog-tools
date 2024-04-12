@@ -1,0 +1,60 @@
+#!/bin/sh 
+
+ROOT=$(dirname $(readlink -f $0))
+FITTERDIR=$ROOT/.vendor/microchip
+
+if [ ! -d $FITTERDIR ]; then
+    echo "\x1b[1;31mMicrochip fitters are not installed. Cannot continue.\x1b[0m"
+    echo "\x1b[0;31m(Please run $ROOT/install.sh to complete installation)\x1b[0m"
+    exit 1
+fi
+
+if [ ! -d $ROOT/.venv ]; then
+    echo "\x1b[1;31mPython environment not found. Cannot continue.\x1b[0m"
+    echo "\x1b[0;31m(Please run $ROOT/install.sh to complete installation)\x1b[0m"
+    exit 1
+fi
+
+YOSYS=$(command -v yosys)
+if [ -z $YOSYS ]; then
+    echo "\x1b[1;31myosys is required for verilog support; Please install it and try again.\x1b[0m"
+    echo "\x1b[0;31m(https://github.com/YosysHQ/oss-cad-suite-build/releases)\x1b[0m"
+    exit 1
+fi
+
+WINE=$(command -v wine)
+if [ -z $WINE ]; then
+    echo "\x1b[1;31mwine is required for Microchip fitters; Please install it and try again.\x1b[0m"
+    echo "\x1b[0;31m(try 'brew install wine' or 'sudo apt-get install wine')\x1b[0m"
+    exit 1
+fi
+
+NAME=$1; shift
+OPTS=$(grep '//OPT:' ${NAME}.v | cut -d' ' -f2-)
+DEVICE=$(grep '//ATF:' ${NAME}.v | cut -d' ' -f2-)
+
+echo "dev ice = $DEVICE"
+
+if [ -z $DEVICE ]; then
+    echo "\x1b[1;33mWarning: //ATF not specified in source; Defaulting to ATF1502!\x1b[0m"
+    DEVICE=1502
+fi
+case $DEVICE in
+    1502|1504|1508)
+        FITTER=fit$DEVICE.exe
+        ;;
+    *)
+        echo "\x1b[1;31m'$DEVICE' is not a recognized ATF CPLD device type!\x1b[0m"
+        echo "\x1b[0;31m(correct the //ATF: line in the source and try again)\x1b[0m"
+        exit 2
+        ;;
+esac
+
+$YOSYS -p "read_verilog -lib ${ROOT}/cells.v; read_verilog ${NAME}.v; hierarchy" -o ${NAME}.edif
+grep '//PIN:' ${NAME}.v | cut -d' ' -f2- >${NAME}.pin
+wine "$FITTERDIR/$FITTER" -i ${NAME}.edif -o ${NAME}.jed -strategy ifmt=edif -strategy optimize=off ${OPTS}
+
+source $ROOT/.venv/bin/activate
+python -m util.fuseconv ${NAME}.jed ${NAME}.svf
+python -m util.svf2xsvf ${NAME}.svf ${NAME}.xsvf
+deactivate

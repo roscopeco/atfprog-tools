@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+    echo "\x1b[1;37mUsage: \x1b[0;37matf_clean <directory>\x1b[0m"
+    exit 1
+fi
+
+ROOT=$(readlink -f $1)
+if [ -z $ROOT ]; then
+    echo "\x1b[1;31mThe specified directory does not exist; Cannot continue.\x1b[0m"
+    echo "\x1b[0;31m(ensure '$1' refers to a writeable directory)\x1b[0m"
+    exit 1
+fi
+if [ ! -d $ROOT ] || [ ! -w $ROOT ]; then
+    echo "\x1b[1;31mThe specified directory does not exist, or is not writeable; Cannot continue.\x1b[0m"
+    echo "\x1b[0;31m(ensure '$ROOT' is a writeable directory)\x1b[0m"
+    exit 1
+fi
+
+for fn in *.edif *.fit *.io *.jed *.pin *.svf *.tt3 *.xsvf
+do
+    rm $ROOT/$fn 2> /dev/null
+done
+
