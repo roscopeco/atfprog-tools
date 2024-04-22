@@ -55,6 +55,6 @@ grep '//PIN:' ${NAME}.v | cut -d' ' -f2- >${NAME}.pin
 wine "$FITTERDIR/$FITTER" -i ${NAME}.edif -o ${NAME}.jed -strategy ifmt=edif -strategy optimize=off ${OPTS}
 
 source $ROOT/.venv/bin/activate
-python -m util.fuseconv ${NAME}.jed ${NAME}.svf
-python -m util.svf2xsvf ${NAME}.svf ${NAME}.xsvf
+python -m src.atfu.converter.fuseconv ${NAME}.jed ${NAME}.svf
+python -m src.atfu.converter.svf2xsvf ${NAME}.svf ${NAME}.xsvf
 deactivate

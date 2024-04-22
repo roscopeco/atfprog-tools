@@ -30,41 +30,43 @@ class JESD3Lexer:
     # This follows the JESD3-C grammar, with the exception that spaces are more permissive.
     # As described, only 0x0D is allowed in between fields, which is absurd.
     _fields = (
-        (r"N",  r"[ \r\n]*(.*?)"),
-        (r"D",  r".*?"),
+        (r"N", r"[ \r\n]*(.*?)"),
+        (r"D", r".*?"),
         (r"QF", r"([0-9]+)"),
         (r"QP", r"([0-9]+)"),
         (r"QV", r"([0-9]+)"),
-        (r"F",  r"([01])"),
-        (r"L",  r"([0-9]+)[ \r\n]+([01 \r\n]+)"),
-        (r"C",  r"([0-9A-F]{4})"),
+        (r"F", r"([01])"),
+        (r"L", r"([0-9]+)[ \r\n]+([01 \r\n]+)"),
+        (r"C", r"([0-9A-F]{4})"),
         (r"EH", r"([0-9A-F]+)"),
-        (r"E",  r"([01]+)"),
+        (r"E", r"([01]+)"),
         (r"UA", r"([\r\n\x20-\x29\x2B-\x7E]+)"),
         (r"UH", r"([0-9A-F]+)"),
-        (r"U",  r"([01]+)"),
-        (r"J",  r"([0-9]+)[ \r\n]+([0-9]+)"),
-        (r"G",  r"([01])"),
-        (r"X",  r"([01])"),
-        (r"P",  r"([ \r\n]*[0-9]+)+"),
-        (r"V",  r"([0-9]+)[ \r\n]+([0-9BCDFHTUXZ]+)"),
-        (r"S",  r"([01]+)"),
-        (r"R",  r"([0-9A-F]{8})"),
-        (r"T",  r"([0-9]+)"),
-        (r"A",  r"([\r\n\x20-\x29\x2B-\x7E]*)([0-9]+)"),
+        (r"U", r"([01]+)"),
+        (r"J", r"([0-9]+)[ \r\n]+([0-9]+)"),
+        (r"G", r"([01])"),
+        (r"X", r"([01])"),
+        (r"P", r"([ \r\n]*[0-9]+)+"),
+        (r"V", r"([0-9]+)[ \r\n]+([0-9BCDFHTUXZ]+)"),
+        (r"S", r"([01]+)"),
+        (r"R", r"([0-9A-F]{8})"),
+        (r"T", r"([0-9]+)"),
+        (r"A", r"([\r\n\x20-\x29\x2B-\x7E]*)([0-9]+)"),
     )
-    _stx_spec_re  = re.compile(r"\x02(.*?)\*[ \r\n]*", re.A|re.S)
-    _stx_quirk_re = re.compile(r"\x02()[ \r\n]*", re.A|re.S)
-    _etx_re       = re.compile(r"\x03([0-9A-F]{4})", re.A|re.S)
-    _ident_re     = re.compile(r"|".join(ident for ident, args in _fields), re.A|re.S)
-    _field_res    = {ident: re.compile(ident + args + r"[ \r\n]*\*[ \r\n]*", re.A|re.S)
-                     for ident, args in _fields}
+    _stx_spec_re = re.compile(r"\x02(.*?)\*[ \r\n]*", re.A | re.S)
+    _stx_quirk_re = re.compile(r"\x02()[ \r\n]*", re.A | re.S)
+    _etx_re = re.compile(r"\x03([0-9A-F]{4})", re.A | re.S)
+    _ident_re = re.compile(r"|".join(ident for ident, args in _fields), re.A | re.S)
+    _field_res = {
+        ident: re.compile(ident + args + r"[ \r\n]*\*[ \r\n]*", re.A | re.S)
+        for ident, args in _fields
+    }
 
     def __init__(self, buffer, quirk_no_design_spec=False):
-        self.buffer   = buffer
+        self.buffer = buffer
         self.position = 0
         self.checksum = 0
-        self._state   = "start"
+        self._state = "start"
         if quirk_no_design_spec:
             self._stx_re = self._stx_quirk_re
         else:
@@ -103,17 +105,23 @@ class JESD3Lexer:
                 token = match.group(0)
                 match = self._field_res[token].match(self.buffer, self.position)
                 if not match:
-                    raise JESD3ParsingError("field %s has invalid format at line %d, column %d"
-                                            % (token, *self.line_column()))
+                    raise JESD3ParsingError(
+                        "field %s has invalid format at line %d, column %d"
+                        % (token, *self.line_column())
+                    )
                 else:
                     self.checksum += sum(map(ord, match.group(0)))
 
             else:
                 match = self._etx_re.match(self.buffer, self.position)
                 if not match:
-                    raise JESD3ParsingError("unrecognized field at line %d, column %d (%r...)"
-                                            % (*self.line_column(),
-                                               self.buffer[self.position:self.position + 16]))
+                    raise JESD3ParsingError(
+                        "unrecognized field at line %d, column %d (%r...)"
+                        % (
+                            *self.line_column(),
+                            self.buffer[self.position : self.position + 16],
+                        )
+                    )
                 else:
                     token = "end"
                     self._state = "end"
@@ -128,22 +136,24 @@ class JESD3Lexer:
 
 class JESD3Parser:
     def __init__(self, buffer, **kwargs):
-        self._lexer    = JESD3Lexer(buffer, **kwargs)
+        self._lexer = JESD3Lexer(buffer, **kwargs)
         self._position = 0
 
-        self.design_spec     = ""
-        self.notes           = []
-        self.fuse            = None
-        self._fuse_default   = None
+        self.design_spec = ""
+        self.notes = []
+        self.fuse = None
+        self._fuse_default = None
         self._fuse_bit_count = 0
         self.electrical_fuse = None
-        self.user_fuse       = None
-        self.security_fuse   = None
-        self.device_id       = None
+        self.user_fuse = None
+        self.security_fuse = None
+        self.device_id = None
 
     def _parse_error(self, error):
-        raise JESD3ParsingError("%s at line %d, column %d"
-                                % (error, *self._lexer.line_column(self._position)))
+        raise JESD3ParsingError(
+            "%s at line %d, column %d"
+            % (error, *self._lexer.line_column(self._position))
+        )
 
     def parse(self):
         for token, position, args in self._lexer:
@@ -191,21 +201,25 @@ class JESD3Parser:
         """Fuse list"""
         if self.fuse is None:
             self._parse_error("fuse list specified before fuse count")
-        index  = int(index, 10)
+        index = int(index, 10)
         values = bitarray(re.sub(r"[ \r\n]", "", values), endian="little")
         if index + len(values) > len(self.fuse):
-            self._parse_error("fuse list specifies range [%d:%d] beyond last fuse %d"
-                              % (index, index + len(values), len(self.fuse)))
-        self.fuse[index:index + len(values)] = values
+            self._parse_error(
+                "fuse list specifies range [%d:%d] beyond last fuse %d"
+                % (index, index + len(values), len(self.fuse))
+            )
+        self.fuse[index : index + len(values)] = values
         self._fuse_bit_count += len(values)
 
     def _on_C(self, checksum):
         """Fuse checksum"""
         expected_checksum = int(checksum, 16)
-        actual_checksum   = sum(self.fuse.tobytes()) & 0xffff
+        actual_checksum = sum(self.fuse.tobytes()) & 0xFFFF
         if expected_checksum != actual_checksum:
-            self._parse_error("fuse checksum mismatch: expected %04X, actual %04X"
-                              % (expected_checksum, actual_checksum))
+            self._parse_error(
+                "fuse checksum mismatch: expected %04X, actual %04X"
+                % (expected_checksum, actual_checksum)
+            )
 
     def _set_electrical_fuse(self, value):
         if self.electrical_fuse is not None:
@@ -280,21 +294,25 @@ class JESD3Parser:
         expected_checksum = int(checksum, 16)
         if expected_checksum == 0x0000:
             return
-        actual_checksum   = self._lexer.checksum & 0xffff
+        actual_checksum = self._lexer.checksum & 0xFFFF
         if expected_checksum != actual_checksum:
-            self._parse_error("transmission checksum mismatch: expected %04X, actual %04X"
-                              % (expected_checksum, actual_checksum))
+            self._parse_error(
+                "transmission checksum mismatch: expected %04X, actual %04X"
+                % (expected_checksum, actual_checksum)
+            )
 
         if self._fuse_default is None and self._fuse_bit_count < len(self.fuse):
-            self._parse_error("fuse default state is not specified, and only %d out of %d fuse "
-                              "bits are explicitly defined"
-                              % (self._fuse_bit_count, len(self.fuse)))
+            self._parse_error(
+                "fuse default state is not specified, and only %d out of %d fuse "
+                "bits are explicitly defined" % (self._fuse_bit_count, len(self.fuse))
+            )
 
 
 if __name__ == "__main__":
     import sys
+
     with open(sys.argv[1], "r") as f:
         parser = JESD3Parser(f.read(), quirk_no_design_spec=False)
         parser.parse()
         for i in range(0, len(parser.fuse) + 63, 64):
-            print("%08x: %s" % (i, parser.fuse[i:i + 64].to01()))
+            print("%08x: %s" % (i, parser.fuse[i : i + 64].to01()))

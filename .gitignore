@@ -6,7 +6,7 @@ tests/toggle.fit
 tests/toggle.io
 tests/toggle.jed
 tests/toggle.pin
-tests/toggle.svf
 tests/toggle.tt3
-tests/toggle.xsvf
+pcinst.zip
+src/little_atf_programmer.egg-info
 

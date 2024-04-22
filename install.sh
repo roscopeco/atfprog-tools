@@ -103,7 +103,7 @@ if [ ! -d $TEMP_DIR ]; then
     exit 3
 fi
 
-VEND_DIR=$ROOT/.vendor/microchip
+VEND_DIR=$ROOT/.vendor/microchip/drive_c/Wincupl/Wincupl/Fitters
 
 $UNZIP -qq -d $TEMP_DIR $PROCHIP_INSTALLER
 $INNOEX -s -d $TEMP_DIR -I app/Prochip/pldfit/aprim.lib -I app/Prochip/pldfit/atmel.std -I app/Prochip/pldfit/fit1502.exe -I app/Prochip/pldfit/fit1504.exe -I app/Prochip/pldfit/fit1508.exe $TEMP_DIR/ProChip5_setup.exe

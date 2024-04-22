@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "little-atf-programmer"
+version = "2024.1001-alpha"
+description = "Little ATF150x Programmer Board utility programs"
+readme = "README.md"
+authors = [{ name = "The Really Old-School Company Limited", email = "info@rosco-m68k.com" }]
+license = { file = "LICENSE.md" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["cpld", "atf1502", "atf1504", "atf1508", "logic", "programmer"]
+dependencies = [
+    "pyserial==3.5",
+    "pyparsing==3.1.2",
+    "bitarray==2.9.2",
+    "tabulate==0.9.0",
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = ["black", "bumpver", "pre-commit", "isort", "pip-tools", "pytest", "sure", "httpretty"]
+
+[project.scripts]
+atfu = "atfu.command:main"
+
+[project.urls]
+Homepage = "https://github.com/roscopeco/atfprog-tools"
+
+[tool.bumpver]
+current_version = "2024.1001-alpha"
+version_pattern = "YYYY.BUILD[-TAG]"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'version = "{version}"',
+]
+"src/atfu.py" = [
+    'VERSION = "{version}"',
+]
+
+[tool.black]
+include = '\.pyi?$'
+exclude = '''
+    /(
+        \.git
+      | \.venv
+      | _build
+      | build
+      | dist
+    )/
+    '''
