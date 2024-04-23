@@ -61,3 +61,8 @@ exclude = '''
       | dist
     )/
     '''
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
