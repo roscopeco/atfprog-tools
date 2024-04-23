@@ -7,6 +7,7 @@ import serial
 if sys.stdout.isatty():
     cbRed = "\x1b[1;31m"
     cbGreen = "\x1b[1;32m"
+    cbYellow = "\x1b[1;33m"
     cReset = "\x1b[0m"
 else:
     cbRed = ""
@@ -85,7 +86,18 @@ class Programmer(object):
             match command:
                 case "S":
                     # Send data
-                    num_bytes = int(argument)
+                    try:
+                        num_bytes = int(
+                            argument
+                        )  # Blindly try to continue; _should_ only happen
+                        # when programmer has trace debug on and is dumping an
+                        # XCOMMENT(STATE)
+                    except:
+                        print(
+                            f"{cbYellow}WARN{cReset}: Invalid 'S' command from programmer; Skipped..."
+                        )
+                        continue
+
                     xsvf_data = fd.read(num_bytes)
                     bytes_written += len(xsvf_data)
                     self.update_hashes(xsvf_data)
@@ -123,13 +135,13 @@ class Programmer(object):
                     return self._error_code == 0
 
                 case "D":
-                    # Device
+                    # Debug
                     if self._verbosity > 1:
                         self.print_lf()
                         print("Device:", argument)
 
                 case "!":
-                    # Debug / important
+                    # Important
                     if self._verbosity > 1:
                         self.print_lf()
                         print(f"{cbGreen}>>>{cReset} ", argument)
