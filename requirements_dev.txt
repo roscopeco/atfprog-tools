@@ -1,0 +1,3 @@
+-r requirements.txt
+pytest==8.1.1
+sure==2.0.1
