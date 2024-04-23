@@ -1,5 +1,6 @@
 .vendor
 .venv
+.vscode
 **/__pycache__
 test_cpld/toggle.edif
 test_cpld/toggle.fit
