@@ -10,4 +10,4 @@ test_cpld/toggle.pin
 test_cpld/toggle.tt3
 pcinst.zip
 src/little_atf_programmer.egg-info
-
+dist
