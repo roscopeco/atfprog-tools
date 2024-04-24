@@ -6,6 +6,8 @@ import sys
 
 import serial.serialutil
 
+from progress.bar import Bar
+
 if sys.stdout.isatty():
     cbWhite = "\x1b[1;37m"
     cbRed = "\x1b[1;31m"
@@ -29,7 +31,15 @@ class JtagProgrammer(object):
     )
     _translate_str = bytes(_translate_str_1, "ascii")
 
-    def __init__(self, operation: str, device: str, verbosity=0):
+    def __init__(
+        self,
+        operation: str,
+        device: str,
+        verbosity=0,
+        no_filename=False,
+        no_fail=False,
+        no_success=False,
+    ):
         self._operation = operation
         self._serial = serial.Serial(port=device)
         self._need_lf = False
@@ -38,6 +48,9 @@ class JtagProgrammer(object):
         self._start_time = 0
         self._error_code = 0
         self._verbosity = verbosity
+        self._no_filename = no_filename
+        self._no_fail = no_fail
+        self._no_success = no_success
 
     def init_programmer(self, mode):
         self._serial.flushInput()
@@ -65,11 +78,12 @@ class JtagProgrammer(object):
 
         if self._start_time > 0 and self._verbosity > 0:
             if success:
-                print(
-                    f"{cbGreen}Success{cReset} in %.02f seconds."
-                    % (time.time() - self._start_time)
-                )
-            else:
+                if not self._no_success:
+                    print(
+                        f"{cbGreen}Success{cReset} in %.02f seconds."
+                        % (time.time() - self._start_time)
+                    )
+            elif not self._no_fail:
                 print(
                     f"{cbRed}Failure{cReset} in %.02f seconds."
                     % (time.time() - self._start_time)
@@ -88,6 +102,14 @@ class JtagProgrammer(object):
         self._file_size = os.fstat(fd.fileno()).st_size
         bytes_written = 0
         okquit = False
+
+        if self._verbosity > 0:
+            progress = Bar(
+                f"{cbWhite}%-10s{cReset}:" % self._operation,
+                max=self._file_size,
+                suffix="%(percent)d%%",
+            )
+
         while True:
             line = self._serial.readline().strip()
 
@@ -118,22 +140,13 @@ class JtagProgrammer(object):
                     xsvf_data += b"\xFF" * (num_bytes - len(xsvf_data))
                     self._serial.write(xsvf_data)
                     if self._verbosity > 0:
-                        print(
-                            f"\r{cbWhite}%-10s{cReset}: Sent: %8d bytes, %8d remaining"
-                            % (
-                                self._operation,
-                                bytes_written,
-                                self._file_size - bytes_written,
-                            ),
-                            end="",
-                        )
-                        sys.stdout.flush()
                         self._need_lf = True
+                        progress.next(n=num_bytes)
 
                 case "R":
                     # Ready
                     self.initialize_hashes()
-                    if self._verbosity > 0:
+                    if self._verbosity > 0 and not self._no_filename:
                         print("File: %s" % os.path.realpath(fd.name))
                     self._start_time = time.time()
 
@@ -168,7 +181,7 @@ class JtagProgrammer(object):
                     self.print_lf()
                     print(
                         "Unknown command from programmer:",
-                        line.translate(Programmer._translate_str),
+                        line.translate(JtagProgrammer._translate_str),
                     )
 
     def upload_all_files(self, fd_list):
