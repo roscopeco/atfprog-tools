@@ -7,6 +7,7 @@ import sys
 import serial.serialutil
 
 from progress.bar import Bar
+from tqdm import tqdm
 
 if sys.stdout.isatty():
     cbWhite = "\x1b[1;37m"
@@ -103,12 +104,18 @@ class JtagProgrammer(object):
         bytes_written = 0
         okquit = False
 
+        progress = None
         if self._verbosity > 0:
-            progress = Bar(
-                f"{cbWhite}%-10s{cReset}:" % self._operation,
-                max=self._file_size,
-                suffix="%(percent)d%%",
+            progress = tqdm(
+                total=self._file_size,
+                desc=f"{cbWhite}%-10s{cReset}" % self._operation,
+                unit="b",
             )
+            # progress = Bar(
+            #     f"{cbWhite}%-10s{cReset}:" % self._operation,
+            #     max=self._file_size,
+            #     suffix="%(percent)d%%",
+            # )
 
         while True:
             line = self._serial.readline().strip()
@@ -140,13 +147,12 @@ class JtagProgrammer(object):
                     xsvf_data += b"\xFF" * (num_bytes - len(xsvf_data))
                     self._serial.write(xsvf_data)
                     if self._verbosity > 0:
-                        self._need_lf = True
-                        progress.next(n=num_bytes)
+                        progress.update(n=num_bytes)
 
                 case "R":
                     # Ready
                     self.initialize_hashes()
-                    if self._verbosity > 0 and not self._no_filename:
+                    if self._verbosity > 1 and not self._no_filename:
                         print("File: %s" % os.path.realpath(fd.name))
                     self._start_time = time.time()
 
@@ -155,7 +161,9 @@ class JtagProgrammer(object):
                     if not okquit:
                         okquit = True
                         continue
-                    self.print_lf()
+
+                    if self._verbosity > 0:
+                        progress.close()
 
                     # first field is the error code, second is the message.
                     args = argument.split(",")

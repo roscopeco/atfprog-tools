@@ -81,7 +81,7 @@ def _arg_parser():
         "-d",
         "--device",
         default="ATF1502",
-        help="Device to program (default: %(default)s)",
+        help="Device to erase (default: %(default)s)",
     )
     erase.set_defaults(func=atfu.erase.handler)
 
@@ -92,6 +92,12 @@ def _arg_parser():
         "--programmer",
         default=atfu.programmer.default_programmer_path(),
         help="Programmer device (default: %(default)s)",
+    )
+    check.add_argument(
+        "-d",
+        "--device",
+        default="ATF1502",
+        help="Device to check (default: %(default)s)",
     )
     check.set_defaults(func=atfu.check.handler)
 
