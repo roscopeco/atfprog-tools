@@ -2,12 +2,6 @@
 .venv
 .vscode
 **/__pycache__
-test_cpld/toggle.edif
-test_cpld/toggle.fit
-test_cpld/toggle.io
-test_cpld/toggle.jed
-test_cpld/toggle.pin
-test_cpld/toggle.tt3
 pcinst.zip
 src/little_atf_programmer.egg-info
 dist
