@@ -1,7 +1,7 @@
 #!/bin/sh 
 
 ROOT=$(dirname $(readlink -f $0))
-FITTERDIR=$ROOT/.vendor/microchip
+FITTERDIR=$ROOT/.vendor/microchip/drive_c/Wincupl/Wincupl/Fitters
 
 if [ ! -d $FITTERDIR ]; then
     echo "\x1b[1;31mMicrochip fitters are not installed. Cannot continue.\x1b[0m"
