@@ -6,11 +6,22 @@
 This repository contains the official standard programmer software and utilities 
 for the Little ATF150x Programmer Board.
 
-The board will be available soon on the [rosco_m68k store](https://store.rosco-m68k.com)
-
 ![Picture of The Little ATF150x Programmer](images/board.jpeg)
 
-### Installation
+This is a plug-and-play USB-connected programmer and breakout board for
+Atmel (Microchip) ATF150{2,4,8} CPLDs, featuring:
+
+* Support for JED, SVF or XSVF files
+* Support for both PLCC44 and 84 packages on-board
+* Ability to drive ICSP via the JTAG headers (single-device only - chains **not** currently supported)
+* Ability to erase JTAG-locked and secured devices
+
+The board is currently in community testing, and will be available soon 
+on the [rosco_m68k store](https://store.rosco-m68k.com) 🥳
+
+### Software Installation
+
+> **Note** pypi installation **coming soon**!
 
 Requirements: Python 3.9+ and the libraries in `requirements.txt`.
 
