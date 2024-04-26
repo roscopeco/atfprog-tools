@@ -1,7 +1,14 @@
 # Little ATF150x Programmer Board
 ## Software utilities
 
-Standard programmer software and utilities for the Little ATF150x Programmer Board.
+### What
+
+This repository contains the official standard programmer software and utilities 
+for the Little ATF150x Programmer Board.
+
+The board will be available soon on the [rosco_m68k store](https://store.rosco-m68k.com)
+
+![Picture of The Little ATF150x Programmer](images/board.jpeg)
 
 ### Installation
 
