@@ -33,6 +33,10 @@ If you're developing this, you'll probably want to install it `--editable`.
 
 ### Usage
 
+
+https://github.com/roscopeco/atfprog-tools/assets/2096421/9fb68308-fedf-4e8e-993c-2e09e827a8f6
+
+
 #### General arguments
 
 General command line arguments look like this:
