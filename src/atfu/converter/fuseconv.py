@@ -1,28 +1,14 @@
 import argparse
-import textwrap
-from bitarray import bitarray
 
-from .jesd3 import JESD3Parser
-from .svf import SVFParser, SVFEventHandler
-from .device import *
+from atfu.converter.jesd3 import JESD3Parser
+from atfu.converter.svfeventhandler import SVFEventHandler
+from atfu.converter.device import *
 
 
 def read_jed(file):
     parser = JESD3Parser(file.read())
     parser.parse()
     return parser.fuse, parser.design_spec
-
-
-def write_jed(file, jed_bits, *, comment):
-    assert "*" not in comment
-    file.write("\x02{}*\n".format(comment))
-    file.write("QF{}* F0*\n".format(len(jed_bits)))
-    chunk_size = 64
-    for start in range(0, len(jed_bits), chunk_size):
-        file.write(
-            "L{:05d} {}*\n".format(start, jed_bits[start : start + chunk_size].to01())
-        )
-    file.write("\x030000\n")
 
 
 class ATFSVFEventHandler(SVFEventHandler):
@@ -69,20 +55,6 @@ class ATFSVFEventHandler(SVFEventHandler):
     ):
         if not self.erase and self.ir == ATF15xxInstr.ISC_PROGRAM_ERASE:
             self.bits[self.addr] = self.data
-
-
-def read_svf(file):
-    handler = ATFSVFEventHandler()
-    parser = SVFParser(file.read(), handler)
-    parser.parse_file()
-    return handler.bits, ""
-
-
-def _bitarray_to_hex(input_bits):
-    bits = bitarray(input_bits, endian="little")
-    bits.bytereverse()
-    bits.reverse()
-    return bits.tobytes().hex()
 
 
 def write_svf(file, svf_bits, device, *, comment):
@@ -190,81 +162,3 @@ class ATFFileType(argparse.FileType):
                 "{} is not a JED or SVF file".format(filename)
             )
         return file
-
-
-def arg_parser():
-    parser = argparse.ArgumentParser(
-        description=textwrap.dedent(
-            """
-    Convert between ATF15xx JED and SVF files. The type of the file is determined by the extension
-    (``.jed`` or ``.svf``, respectively).
-
-    If an SVF file is provided as an input, it is used to drive the JTAG programming state machine
-    of a simulated device. The state machine is greatly simplified and only functions correctly
-    when driven with vectors that program every non-reserved bit at least once.
-    """
-        )
-    )
-    parser.add_argument(
-        "-d",
-        "--device",
-        metavar="DEVICE",
-        choices=("ATF1502AS", "ATF1504AS", "ATF1508AS"),
-        default="ATF1502AS",
-        help="Select the device to use.",
-    )
-    parser.add_argument(
-        "input",
-        metavar="INPUT",
-        type=ATFFileType("r"),
-        help="Read fuses from file INPUT.",
-    )
-    parser.add_argument(
-        "output",
-        metavar="OUTPUT",
-        type=ATFFileType("w"),
-        help="Write fuses to file OUTPUT.",
-    )
-    return parser
-
-
-def main():
-    print(">>> Creating SVF...")
-    args = arg_parser().parse_args()
-
-    if args.device == "ATF1502AS":
-        device = ATF1502ASDevice
-    elif args.device == "ATF1504AS":
-        device = ATF1504ASDevice
-    elif args.device == "ATF1508AS":
-        device = ATF1508ASDevice
-    else:
-        assert False
-
-    jed_bits = svf_bits = None
-    if args.input.name.lower().endswith(".jed"):
-        jed_bits, comment = read_jed(args.input)
-        if device.fuse_count != len(jed_bits):
-            raise SystemExit(
-                f"Device has {device.fuse_count} fuses, JED file "
-                f"has {len(jed_bits)}; wrong --device option?"
-            )
-    elif args.input.name.lower().endswith(".svf"):
-        svf_bits, comment = read_svf(args.input)
-    else:
-        assert False
-
-    if args.output.name.lower().endswith(".jed"):
-        if jed_bits is None:
-            jed_bits = device.svf_to_jed(svf_bits)
-        write_jed(args.output, jed_bits, comment=comment)
-    elif args.output.name.lower().endswith(".svf"):
-        if svf_bits is None:
-            svf_bits = device.jed_to_svf(jed_bits)
-        write_svf(args.output, svf_bits, device, comment=comment)
-    else:
-        assert False
-
-
-if __name__ == "__main__":
-    main()

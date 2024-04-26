@@ -56,7 +56,7 @@ class JtagProgrammer(object):
 
     def init_programmer(self, mode):
         if self._serial is None:
-            serial.Serial(port=self._device)
+            self._serial = serial.Serial(port=self._device)
 
         self._serial.flushInput()
         self._serial.flushOutput()
@@ -115,11 +115,6 @@ class JtagProgrammer(object):
                 desc=f"{cbWhite}%-10s{cReset}" % self._operation,
                 unit="b",
             )
-            # progress = Bar(
-            #     f"{cbWhite}%-10s{cReset}:" % self._operation,
-            #     max=self._file_size,
-            #     suffix="%(percent)d%%",
-            # )
 
         while True:
             line = self._serial.readline().strip()
@@ -186,6 +181,11 @@ class JtagProgrammer(object):
                 case "!":
                     # Important
                     if self._verbosity > 1:
+                        # Can close this here, programmer only importants when done...
+                        #
+                        # (unless built with trace but that'll only be internal anyhow...)
+                        progress.close()
+
                         self.print_lf()
                         print(f"{cbGreen}>>>{cReset} ", argument)
 

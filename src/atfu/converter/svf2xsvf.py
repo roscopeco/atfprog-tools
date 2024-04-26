@@ -8,12 +8,12 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-#
+
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
+
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, you may find one here:
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -25,18 +25,21 @@
 # A python program to convert an SVF file to an XSVF file.  There is an
 # option to include comments containing the source file line number from the origin
 # SVF file before each outputted XSVF statement.
-#
+
 # We deviate from the XSVF spec in that we introduce a new command called
 # XWAITSTATE which directly flows from the SVF RUNTEST command.  Unfortunately
 # XRUNSTATE was ill conceived and is not used here.  We also add support for the
 # three Lattice extensions to SVF: LCOUNT, LDELAY, and LSDR.  The xsvf file
 # generated from this program is suitable for use with the xsvf player in
 # OpenOCD with my modifications to xsvf.c.
-#
+
 # This program is written for python 3.0, and it is not easy to change this
 # back to 2.x.  You may find it easier to use python 3.x even if that means
 # building it.
 
+import io
+import tempfile
+from atfu.output import Output
 
 import re
 import sys
@@ -45,21 +48,12 @@ import struct
 
 # There are both ---<Lexer>--- and ---<Parser>--- sections to this program
 
-
-if len(sys.argv) < 3:
-    print("usage %s <svf_filename> <xsvf_filename>" % sys.argv[0])
-    exit(1)
-
-
-inputFilename = sys.argv[1]
-outputFilename = sys.argv[2]
-
-doCOMMENTs = True  # Save XCOMMENTs in the output xsvf file
-# doCOMMENTs = False       # Save XCOMMENTs in the output xsvf file
+# doCOMMENTs = True  # Save XCOMMENTs in the output xsvf file
+doCOMMENTs = False  # Save XCOMMENTs in the output xsvf file
 
 # pick your file encoding
-file_encoding = "ISO-8859-1"
-# file_encoding = 'utf-8'
+# file_encoding = "ISO-8859-1"
+file_encoding = "utf-8"
 
 
 xrepeat = 0  # argument to XREPEAT, gives retry count for masked compares
@@ -191,52 +185,13 @@ def s_nl(scanner, token):
 
 # 2.00E-002
 
-scanner = re.Scanner(
-    [
-        (r"[a-zA-Z]\w*", s_ident),
-        #    (r"[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?", s_float),
-        (r"[-+]?[0-9]+(([.][0-9eE+-]*)|([eE]+[-+]?[0-9]+))", s_float),
-        (r"\d+", s_int),
-        (r"\(([0-9a-fA-F]|\s)*\)", s_hex),
-        (r"(!|//).*$", None),
-        (r";", s_semicolon),
-        (r"\n", s_nl),
-        (r"\s*", None),
-    ],
-    re.MULTILINE,
-)
 
-# open the file using the given encoding
-file = open(sys.argv[1], encoding=file_encoding)
-
-# read all svf file input into string "input"
-input = file.read()
-
-file.close()
-
-# Lexer:
-# create a list of tuples containing (tokenType, tokenValue, LineNumber)
-tokens = scanner.scan(input)[0]
-
-input = None  # allow gc to reclaim memory holding file
-
-# for tokenType, tokenValue, ln in tokens: print( "line %d: %s" % (ln, tokenType), tokenValue )
-
-
-# -----<parser>-----------------------------------------------------------------
-
-tokVal = tokType = tokLn = None
-
-tup = iter(tokens)
-
-
-def nextTok():
+def nextTok(tup):
     """
     Function to read the next token from tup into tokType, tokVal, tokLn (linenumber)
-    which are globals.
     """
-    global tokType, tokVal, tokLn, tup
     tokType, tokVal, tokLn = tup.__next__()
+    return tokType, tokVal, tokLn
 
 
 class ParseError(Exception):
@@ -417,7 +372,7 @@ def writeRUNTEST(outputFile, run_state, end_state, run_count, min_time, tokenTxt
     # read the XSVF command.   They are not the same.  Use an XSVF XWAITSTATE to
     # implement the required behavior of the SVF RUNTEST command.
     if doCOMMENTs:
-        writeComment(output, tokLn, tokenTxt)
+        writeComment(outputFile, tokLn, tokenTxt)
 
     if tokenTxt == "RUNTEST":
         obuf = bytearray(11)
@@ -437,170 +392,240 @@ def writeRUNTEST(outputFile, run_state, end_state, run_count, min_time, tokenTxt
         outputFile.write(obuf)
 
 
-print(">>> Compiling XSVF...")
+def svf2xsvf(output: Output, infile: io.BufferedReader) -> io.BufferedReader:
+    output.output(2, "Compiling SVF to XSVF...")
 
-output = open(outputFilename, mode="wb")
+    outfile = tempfile.NamedTemporaryFile(
+        prefix="atfu-temp-", suffix=".xsvf", mode="w+b"
+    )
 
-hir = MASKSET("HIR")
-hdr = MASKSET("HDR")
-tir = MASKSET("TIR")
-tdr = MASKSET("TDR")
-sir = MASKSET("SIR")
-sdr = MASKSET("SDR")
+    hir = MASKSET("HIR")
+    hdr = MASKSET("HDR")
+    tir = MASKSET("TIR")
+    tdr = MASKSET("TDR")
+    sir = MASKSET("SIR")
+    sdr = MASKSET("SDR")
 
+    expecting_eof = True
 
-expecting_eof = True
+    scanner = re.Scanner(
+        [
+            (r"[a-zA-Z]\w*", s_ident),
+            #    (r"[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?", s_float),
+            (r"[-+]?[0-9]+(([.][0-9eE+-]*)|([eE]+[-+]?[0-9]+))", s_float),
+            (r"\d+", s_int),
+            (r"\(([0-9a-fA-F]|\s)*\)", s_hex),
+            (r"(!|//).*$", None),
+            (r";", s_semicolon),
+            (r"\n", s_nl),
+            (r"\s*", None),
+        ],
+        re.MULTILINE,
+    )
 
+    # read all svf file input into string "input"
+    #
+    # Weirdness: First close it (it'll be binary) and reopen as text
+    # (because underlying code needs that...)
+    input = infile.read()
+    infile.close()
 
-# one of the commands that take the shiftParts after the length, the parse
-# template for all of these commands is identical
-shiftOps = ("SDR", "SIR", "LSDR", "HDR", "HIR", "TDR", "TIR")
+    # Lexer:
+    # create a list of tuples containing (tokenType, tokenValue, LineNumber)
+    tokens = scanner.scan(input)[0]
 
-# the order must correspond to shiftOps, this holds the MASKSETS.  'LSDR' shares sdr with 'SDR'
-shiftSets = (sdr, sir, sdr, hdr, hir, tdr, tir)
+    input = None  # allow gc to reclaim memory holding file
 
-# what to expect as parameters to a shiftOp, i.e. after a SDR length or SIR length
-shiftParts = ("TDI", "TDO", "MASK", "SMASK")
+    # for tokenType, tokenValue, ln in tokens: print( "line %d: %s" % (ln, tokenType), tokenValue )
 
-# the set of legal states which can trail the RUNTEST command
-run_state_allowed = ("IRPAUSE", "DRPAUSE", "RESET", "IDLE")
+    # -----<parser>-----------------------------------------------------------------
 
-enddr_state_allowed = ("DRPAUSE", "IDLE")
-endir_state_allowed = ("IRPAUSE", "IDLE")
+    tokVal = tokType = tokLn = None
 
-trst_mode_allowed = ("ON", "OFF", "Z", "ABSENT")
+    tup = iter(tokens)
 
-enddr_state = IDLE
-endir_state = IDLE
+    # one of the commands that take the shiftParts after the length, the parse
+    # template for all of these commands is identical
+    shiftOps = ("SDR", "SIR", "LSDR", "HDR", "HIR", "TDR", "TIR")
 
-frequency = 1.00e006  # HZ;
+    # the order must correspond to shiftOps, this holds the MASKSETS.  'LSDR' shares sdr with 'SDR'
+    shiftSets = (sdr, sir, sdr, hdr, hir, tdr, tir)
 
-# change detection for xsdrsize and xtdomask
-xsdrsize = -1  # the last one sent, send only on change
-xtdomask = bytearray()  # the last one sent, send only on change
+    # what to expect as parameters to a shiftOp, i.e. after a SDR length or SIR length
+    shiftParts = ("TDI", "TDO", "MASK", "SMASK")
 
+    # the set of legal states which can trail the RUNTEST command
+    run_state_allowed = ("IRPAUSE", "DRPAUSE", "RESET", "IDLE")
 
-# we use a number of single byte writes for the XSVF command below
-cmdbuf = bytearray(1)
+    enddr_state_allowed = ("DRPAUSE", "IDLE")
+    endir_state_allowed = ("IRPAUSE", "IDLE")
 
+    trst_mode_allowed = ("ON", "OFF", "Z", "ABSENT")
 
-# Save the XREPEAT setting into the file as first thing.
-obuf = bytearray(2)
-obuf[0] = XREPEAT
-obuf[1] = xrepeat
-output.write(obuf)
+    enddr_state = IDLE
+    endir_state = IDLE
 
+    frequency = 1.00e006  # HZ;
 
-try:
-    while 1:
-        expecting_eof = True
-        nextTok()
-        expecting_eof = False
-        # print( tokType, tokVal, tokLn )
+    # change detection for xsdrsize and xtdomask
+    xsdrsize = -1  # the last one sent, send only on change
+    xtdomask = bytearray()  # the last one sent, send only on change
 
-        if tokVal in shiftOps:
-            shiftOp_linenum = tokLn
-            shiftOp = tokVal
+    # we use a number of single byte writes for the XSVF command below
+    cmdbuf = bytearray(1)
 
-            set = shiftSets[shiftOps.index(shiftOp)]
+    # Save the XREPEAT setting into the file as first thing.
+    obuf = bytearray(2)
+    obuf[0] = XREPEAT
+    obuf[1] = xrepeat
+    outfile.write(obuf)
 
-            # set flags false, if we see one later, set that one true later
-            sawTDI = sawTDO = sawMASK = sawSMASK = False
+    try:
+        while 1:
+            expecting_eof = True
+            tokType, tokVal, tokLn = nextTok(tup)
+            expecting_eof = False
+            # print( tokType, tokVal, tokLn )
 
-            nextTok()
-            if tokType != "int":
-                raise ParseError(
-                    tokLn,
-                    tokVal,
-                    "Expecting 'int' giving %s length, got '%s'" % (shiftOp, tokType),
-                )
-            length = tokVal
+            if tokVal in shiftOps:
+                shiftOp_linenum = tokLn
+                shiftOp = tokVal
 
-            nextTok()
+                set = shiftSets[shiftOps.index(shiftOp)]
 
-            while tokVal != ";":
-                if tokVal not in shiftParts:
+                # set flags false, if we see one later, set that one true later
+                sawTDI = sawTDO = sawMASK = sawSMASK = False
+
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokType != "int":
                     raise ParseError(
-                        tokLn, tokVal, "Expecting TDI, TDO, MASK, SMASK, or ';'"
+                        tokLn,
+                        tokVal,
+                        "Expecting 'int' giving %s length, got '%s'"
+                        % (shiftOp, tokType),
                     )
-                shiftPart = tokVal
+                length = tokVal
 
-                nextTok()
+                tokType, tokVal, tokLn = nextTok(tup)
 
-                if tokType != "hex":
-                    raise ParseError(tokLn, tokVal, "Expecting hex bits")
-                bits = makeBitArray(tokVal, length)
+                while tokVal != ";":
+                    if tokVal not in shiftParts:
+                        raise ParseError(
+                            tokLn, tokVal, "Expecting TDI, TDO, MASK, SMASK, or ';'"
+                        )
+                    shiftPart = tokVal
 
-                if shiftPart == "TDI":
-                    sawTDI = True
-                    set.tdi = bits
+                    tokType, tokVal, tokLn = nextTok(tup)
 
-                elif shiftPart == "TDO":
-                    sawTDO = True
-                    set.tdo = bits
+                    if tokType != "hex":
+                        raise ParseError(tokLn, tokVal, "Expecting hex bits")
+                    bits = makeBitArray(tokVal, length)
 
-                elif shiftPart == "MASK":
-                    sawMASK = True
-                    set.mask = bits
+                    if shiftPart == "TDI":
+                        sawTDI = True
+                        set.tdi = bits
 
-                elif shiftPart == "SMASK":
-                    sawSMASK = True
-                    set.smask = bits
+                    elif shiftPart == "TDO":
+                        sawTDO = True
+                        set.tdo = bits
 
-                nextTok()
+                    elif shiftPart == "MASK":
+                        sawMASK = True
+                        set.mask = bits
 
-            set.syncLengths(sawTDI, sawTDO, sawMASK, sawSMASK, length)
+                    elif shiftPart == "SMASK":
+                        sawSMASK = True
+                        set.smask = bits
 
-            # process all the gathered parameters and generate outputs here
-            if shiftOp == "SIR":
-                if doCOMMENTs:
-                    writeComment(output, shiftOp_linenum, "SIR")
+                    tokType, tokVal, tokLn = nextTok(tup)
 
-                tdi = combineBitVectors(tir.tdi, sir.tdi, hir.tdi)
-                if len(tdi) > 255:
-                    obuf = bytearray(3)
-                    obuf[0] = XSIR2
-                    struct.pack_into(">h", obuf, 1, len(tdi))
-                else:
-                    obuf = bytearray(2)
-                    obuf[0] = XSIR
-                    obuf[1] = len(tdi)
-                output.write(obuf)
-                obuf = makeXSVFbytes(tdi)
-                output.write(obuf)
+                set.syncLengths(sawTDI, sawTDO, sawMASK, sawSMASK, length)
 
-            elif shiftOp == "SDR":
-                if doCOMMENTs:
-                    writeComment(output, shiftOp_linenum, shiftOp)
+                # process all the gathered parameters and generate outputs here
+                if shiftOp == "SIR":
+                    if doCOMMENTs:
+                        writeComment(outfile, shiftOp_linenum, "SIR")
 
-                if not sawTDO:
-                    # pass a zero filled bit vector for the sdr.mask
-                    mask = combineBitVectors(tdr.mask, bytearray(sdr.size), hdr.mask)
-                    tdi = combineBitVectors(tdr.tdi, sdr.tdi, hdr.tdi)
-
-                    if xsdrsize != len(tdi):
-                        xsdrsize = len(tdi)
-                        cmdbuf[0] = XSDRSIZE
-                        output.write(cmdbuf)
-                        obuf = bytearray(4)
-                        struct.pack_into(
-                            ">i", obuf, 0, xsdrsize
-                        )  # big endian 4 byte int to obuf
-                        output.write(obuf)
-
-                    if xtdomask != mask:
-                        xtdomask = mask
-                        cmdbuf[0] = XTDOMASK
-                        output.write(cmdbuf)
-                        obuf = makeXSVFbytes(mask)
-                        output.write(obuf)
-
-                    cmdbuf[0] = XSDR
-                    output.write(cmdbuf)
+                    tdi = combineBitVectors(tir.tdi, sir.tdi, hir.tdi)
+                    if len(tdi) > 255:
+                        obuf = bytearray(3)
+                        obuf[0] = XSIR2
+                        struct.pack_into(">h", obuf, 1, len(tdi))
+                    else:
+                        obuf = bytearray(2)
+                        obuf[0] = XSIR
+                        obuf[1] = len(tdi)
+                    outfile.write(obuf)
                     obuf = makeXSVFbytes(tdi)
-                    output.write(obuf)
+                    outfile.write(obuf)
 
-                else:
+                elif shiftOp == "SDR":
+                    if doCOMMENTs:
+                        writeComment(outfile, shiftOp_linenum, shiftOp)
+
+                    if not sawTDO:
+                        # pass a zero filled bit vector for the sdr.mask
+                        mask = combineBitVectors(
+                            tdr.mask, bytearray(sdr.size), hdr.mask
+                        )
+                        tdi = combineBitVectors(tdr.tdi, sdr.tdi, hdr.tdi)
+
+                        if xsdrsize != len(tdi):
+                            xsdrsize = len(tdi)
+                            cmdbuf[0] = XSDRSIZE
+                            outfile.write(cmdbuf)
+                            obuf = bytearray(4)
+                            struct.pack_into(
+                                ">i", obuf, 0, xsdrsize
+                            )  # big endian 4 byte int to obuf
+                            outfile.write(obuf)
+
+                        if xtdomask != mask:
+                            xtdomask = mask
+                            cmdbuf[0] = XTDOMASK
+                            outfile.write(cmdbuf)
+                            obuf = makeXSVFbytes(mask)
+                            outfile.write(obuf)
+
+                        cmdbuf[0] = XSDR
+                        outfile.write(cmdbuf)
+                        obuf = makeXSVFbytes(tdi)
+                        outfile.write(obuf)
+
+                    else:
+                        mask = combineBitVectors(tdr.mask, sdr.mask, hdr.mask)
+                        tdi = combineBitVectors(tdr.tdi, sdr.tdi, hdr.tdi)
+                        tdo = combineBitVectors(tdr.tdo, sdr.tdo, hdr.tdo)
+
+                        if xsdrsize != len(tdi):
+                            xsdrsize = len(tdi)
+                            cmdbuf[0] = XSDRSIZE
+                            outfile.write(cmdbuf)
+                            obuf = bytearray(4)
+                            struct.pack_into(
+                                ">i", obuf, 0, xsdrsize
+                            )  # big endian 4 byte int to obuf
+                            outfile.write(obuf)
+
+                        if xtdomask != mask:
+                            xtdomask = mask
+                            cmdbuf[0] = XTDOMASK
+                            outfile.write(cmdbuf)
+                            obuf = makeXSVFbytes(mask)
+                            outfile.write(obuf)
+
+                        cmdbuf[0] = XSDRTDO
+                        outfile.write(cmdbuf)
+                        obuf = makeXSVFbytes(tdi)
+                        outfile.write(obuf)
+                        obuf = makeXSVFbytes(tdo)
+                        outfile.write(obuf)
+                        # print( "len(tdo)=", len(tdo), "len(tdr.tdo)=", len(tdr.tdo), "len(sdr.tdo)=", len(sdr.tdo), "len(hdr.tdo)=", len(hdr.tdo) )
+
+                elif shiftOp == "LSDR":
+                    if doCOMMENTs:
+                        writeComment(outfile, shiftOp_linenum, shiftOp)
+
                     mask = combineBitVectors(tdr.mask, sdr.mask, hdr.mask)
                     tdi = combineBitVectors(tdr.tdi, sdr.tdi, hdr.tdi)
                     tdo = combineBitVectors(tdr.tdo, sdr.tdo, hdr.tdo)
@@ -608,271 +633,246 @@ try:
                     if xsdrsize != len(tdi):
                         xsdrsize = len(tdi)
                         cmdbuf[0] = XSDRSIZE
-                        output.write(cmdbuf)
+                        outfile.write(cmdbuf)
                         obuf = bytearray(4)
                         struct.pack_into(
                             ">i", obuf, 0, xsdrsize
                         )  # big endian 4 byte int to obuf
-                        output.write(obuf)
+                        outfile.write(obuf)
 
                     if xtdomask != mask:
                         xtdomask = mask
                         cmdbuf[0] = XTDOMASK
-                        output.write(cmdbuf)
+                        outfile.write(cmdbuf)
                         obuf = makeXSVFbytes(mask)
-                        output.write(obuf)
+                        outfile.write(obuf)
 
-                    cmdbuf[0] = XSDRTDO
-                    output.write(cmdbuf)
+                    cmdbuf[0] = LSDR
+                    outfile.write(cmdbuf)
                     obuf = makeXSVFbytes(tdi)
-                    output.write(obuf)
+                    outfile.write(obuf)
                     obuf = makeXSVFbytes(tdo)
-                    output.write(obuf)
+                    outfile.write(obuf)
                     # print( "len(tdo)=", len(tdo), "len(tdr.tdo)=", len(tdr.tdo), "len(sdr.tdo)=", len(sdr.tdo), "len(hdr.tdo)=", len(hdr.tdo) )
 
-            elif shiftOp == "LSDR":
+            elif tokVal == "RUNTEST" or tokVal == "LDELAY":
+                # e.g. from lattice tools:
+                # "RUNTEST	IDLE  	5 TCK	1.00E-003 SEC;"
+                saveTok = tokVal
+                tokType, tokVal, tokLn = nextTok(tup)
+                min_time = 0
+                run_count = 0
+                max_time = 600  # ten minutes
+                if tokVal in run_state_allowed:
+                    run_state = StateTxt.index(tokVal)
+                    end_state = run_state  # bottom of page 17 of SVF spec
+                    tokType, tokVal, tokLn = nextTok(tup)
+                if tokType != "int" and tokType != "float":
+                    raise ParseError(
+                        tokLn,
+                        tokVal,
+                        "Expecting 'int' or 'float' after RUNTEST [run_state]",
+                    )
+                timeval = tokVal
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal != "TCK" and tokVal != "SEC" and tokVal != "SCK":
+                    raise ParseError(
+                        tokLn,
+                        tokVal,
+                        "Expecting 'TCK' or 'SEC' or 'SCK' after RUNTEST [run_state] (run_count|min_time)",
+                    )
+                if tokVal == "TCK" or tokVal == "SCK":
+                    run_count = int(timeval)
+                else:
+                    min_time = timeval
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokType == "int" or tokType == "float":
+                    min_time = tokVal
+                    tokType, tokVal, tokLn = nextTok(tup)
+                    if tokVal != "SEC":
+                        raise ParseError(
+                            tokLn,
+                            tokVal,
+                            "Expecting 'SEC' after RUNTEST [run_state] run_count min_time",
+                        )
+                    tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal == "MAXIMUM":
+                    tokType, tokVal, tokLn = nextTok(tup)
+                    if tokType != "int" and tokType != "float":
+                        raise ParseError(
+                            tokLn,
+                            tokVal,
+                            "Expecting 'max_time' after RUNTEST [run_state] min_time SEC MAXIMUM",
+                        )
+                    max_time = tokVal
+                    tokType, tokVal, tokLn = nextTok(tup)
+                    if tokVal != "SEC":
+                        raise ParseError(
+                            tokLn,
+                            tokVal,
+                            "Expecting 'max_time' after RUNTEST [run_state] min_time SEC MAXIMUM max_time",
+                        )
+                    tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal == "ENDSTATE":
+                    tokType, tokVal, tokLn = nextTok(tup)
+                    if tokVal not in run_state_allowed:
+                        raise ParseError(
+                            tokLn,
+                            tokVal,
+                            "Expecting 'run_state' after RUNTEST .... ENDSTATE",
+                        )
+                    end_state = StateTxt.index(tokVal)
+                    tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal != ";":
+                    raise ParseError(tokLn, tokVal, "Expecting ';' after RUNTEST ....")
+                    # print( "run_count=", run_count, "min_time=", min_time,
+                    # "max_time=", max_time, "run_state=", State[run_state], "end_state=", State[end_state] )
+                    print(f"{tokVal} == {tokType}")
+                    writeRUNTEST(
+                        outfile, run_state, end_state, run_count, min_time, saveTok
+                    )
+
+            elif tokVal == "LCOUNT":
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokType != "int":
+                    raise ParseError(
+                        tokLn, tokVal, "Expecting integer 'count' after LCOUNT"
+                    )
+                loopCount = tokVal
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal != ";":
+                    raise ParseError(tokLn, tokVal, "Expecting ';' after LCOUNT count")
                 if doCOMMENTs:
-                    writeComment(output, shiftOp_linenum, shiftOp)
+                    writeComment(outfile, tokLn, "LCOUNT")
+                obuf = bytearray(5)
+                obuf[0] = LCOUNT
+                struct.pack_into(
+                    ">i", obuf, 1, loopCount
+                )  # big endian 4 byte int to obuf
+                outfile.write(obuf)
 
-                mask = combineBitVectors(tdr.mask, sdr.mask, hdr.mask)
-                tdi = combineBitVectors(tdr.tdi, sdr.tdi, hdr.tdi)
-                tdo = combineBitVectors(tdr.tdo, sdr.tdo, hdr.tdo)
-
-                if xsdrsize != len(tdi):
-                    xsdrsize = len(tdi)
-                    cmdbuf[0] = XSDRSIZE
-                    output.write(cmdbuf)
-                    obuf = bytearray(4)
-                    struct.pack_into(
-                        ">i", obuf, 0, xsdrsize
-                    )  # big endian 4 byte int to obuf
-                    output.write(obuf)
-
-                if xtdomask != mask:
-                    xtdomask = mask
-                    cmdbuf[0] = XTDOMASK
-                    output.write(cmdbuf)
-                    obuf = makeXSVFbytes(mask)
-                    output.write(obuf)
-
-                cmdbuf[0] = LSDR
-                output.write(cmdbuf)
-                obuf = makeXSVFbytes(tdi)
-                output.write(obuf)
-                obuf = makeXSVFbytes(tdo)
-                output.write(obuf)
-                # print( "len(tdo)=", len(tdo), "len(tdr.tdo)=", len(tdr.tdo), "len(sdr.tdo)=", len(sdr.tdo), "len(hdr.tdo)=", len(hdr.tdo) )
-
-        elif tokVal == "RUNTEST" or tokVal == "LDELAY":
-            # e.g. from lattice tools:
-            # "RUNTEST	IDLE  	5 TCK	1.00E-003 SEC;"
-            saveTok = tokVal
-            nextTok()
-            min_time = 0
-            run_count = 0
-            max_time = 600  # ten minutes
-            if tokVal in run_state_allowed:
-                run_state = StateTxt.index(tokVal)
-                end_state = run_state  # bottom of page 17 of SVF spec
-                nextTok()
-            if tokType != "int" and tokType != "float":
-                raise ParseError(
-                    tokLn,
-                    tokVal,
-                    "Expecting 'int' or 'float' after RUNTEST [run_state]",
-                )
-            timeval = tokVal
-            nextTok()
-            if tokVal != "TCK" and tokVal != "SEC" and tokVal != "SCK":
-                raise ParseError(
-                    tokLn,
-                    tokVal,
-                    "Expecting 'TCK' or 'SEC' or 'SCK' after RUNTEST [run_state] (run_count|min_time)",
-                )
-            if tokVal == "TCK" or tokVal == "SCK":
-                run_count = int(timeval)
-            else:
-                min_time = timeval
-            nextTok()
-            if tokType == "int" or tokType == "float":
-                min_time = tokVal
-                nextTok()
-                if tokVal != "SEC":
+            elif tokVal == "ENDDR":
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal not in enddr_state_allowed:
                     raise ParseError(
                         tokLn,
                         tokVal,
-                        "Expecting 'SEC' after RUNTEST [run_state] run_count min_time",
+                        "Expecting 'stable_state' after ENDDR. (one of: DRPAUSE, IDLE)",
                     )
-                nextTok()
-            if tokVal == "MAXIMUM":
-                nextTok()
-                if tokType != "int" and tokType != "float":
-                    raise ParseError(
-                        tokLn,
-                        tokVal,
-                        "Expecting 'max_time' after RUNTEST [run_state] min_time SEC MAXIMUM",
-                    )
-                max_time = tokVal
-                nextTok()
-                if tokVal != "SEC":
-                    raise ParseError(
-                        tokLn,
-                        tokVal,
-                        "Expecting 'max_time' after RUNTEST [run_state] min_time SEC MAXIMUM max_time",
-                    )
-                nextTok()
-            if tokVal == "ENDSTATE":
-                nextTok()
-                if tokVal not in run_state_allowed:
-                    raise ParseError(
-                        tokLn,
-                        tokVal,
-                        "Expecting 'run_state' after RUNTEST .... ENDSTATE",
-                    )
-                end_state = StateTxt.index(tokVal)
-                nextTok()
-            if tokVal != ";":
-                raise ParseError(tokLn, tokVal, "Expecting ';' after RUNTEST ....")
-                # print( "run_count=", run_count, "min_time=", min_time,
-                # "max_time=", max_time, "run_state=", State[run_state], "end_state=", State[end_state] )
-                print(f"{tokVal} == {tokType}")
-                writeRUNTEST(output, run_state, end_state, run_count, min_time, saveTok)
-
-        elif tokVal == "LCOUNT":
-            nextTok()
-            if tokType != "int":
-                raise ParseError(
-                    tokLn, tokVal, "Expecting integer 'count' after LCOUNT"
-                )
-            loopCount = tokVal
-            nextTok()
-            if tokVal != ";":
-                raise ParseError(tokLn, tokVal, "Expecting ';' after LCOUNT count")
-            if doCOMMENTs:
-                writeComment(output, tokLn, "LCOUNT")
-            obuf = bytearray(5)
-            obuf[0] = LCOUNT
-            struct.pack_into(">i", obuf, 1, loopCount)  # big endian 4 byte int to obuf
-            output.write(obuf)
-
-        elif tokVal == "ENDDR":
-            nextTok()
-            if tokVal not in enddr_state_allowed:
-                raise ParseError(
-                    tokLn,
-                    tokVal,
-                    "Expecting 'stable_state' after ENDDR. (one of: DRPAUSE, IDLE)",
-                )
-            enddr_state = StateTxt.index(tokVal)
-            nextTok()
-            if tokVal != ";":
-                raise ParseError(
-                    tokLn, tokVal, "Expecting ';' after ENDDR stable_state"
-                )
-            if doCOMMENTs:
-                writeComment(output, tokLn, "ENDDR")
-            obuf = bytearray(2)
-            obuf[0] = XENDDR
-            # Page 10 of the March 1999 SVF spec shows that RESET is also allowed here.
-            # Yet the XSVF spec has no provision for that, and uses a non-standard, i.e.
-            # boolean argument to XENDDR which only handles two of the 3 intended states.
-            obuf[1] = 1 if enddr_state == DRPAUSE else 0
-            output.write(obuf)
-
-        elif tokVal == "ENDIR":
-            nextTok()
-            if tokVal not in endir_state_allowed:
-                raise ParseError(
-                    tokLn,
-                    tokVal,
-                    "Expecting 'stable_state' after ENDIR. (one of: IRPAUSE, IDLE)",
-                )
-            endir_state = StateTxt.index(tokVal)
-            nextTok()
-            if tokVal != ";":
-                raise ParseError(
-                    tokLn, tokVal, "Expecting ';' after ENDIR stable_state"
-                )
-            if doCOMMENTs:
-                writeComment(output, tokLn, "ENDIR")
-            obuf = bytearray(2)
-            obuf[0] = XENDIR
-            # Page 10 of the March 1999 SVF spec shows that RESET is also allowed here.
-            # Yet the XSVF spec has no provision for that, and uses a non-standard, i.e.
-            # boolean argument to XENDDR which only handles two of the 3 intended states.
-            obuf[1] = 1 if endir_state == IRPAUSE else 0
-            output.write(obuf)
-
-        elif tokVal == "STATE":
-            nextTok()
-            ln = tokLn
-            while tokVal != ";":
-                if tokVal not in StateTxt:
-                    raise ParseError(
-                        tokLn, tokVal, "Expecting 'stable_state' after STATE"
-                    )
-                stable_state = StateTxt.index(tokVal)
-
-                if doCOMMENTs and ln != -1:
-                    writeComment(output, ln, "STATE")
-                    ln = -1  # save comment only once
-
-                obuf = bytearray(2)
-                obuf[0] = XSTATE
-                obuf[1] = stable_state
-                output.write(obuf)
-                nextTok()
-
-        elif tokVal == "FREQUENCY":
-            nextTok()
-            if tokVal != ";":
-                if tokType != "int" and tokType != "float":
-                    raise ParseError(
-                        tokLn, tokVal, "Expecting 'cycles HZ' after FREQUENCY"
-                    )
-                frequency = tokVal
-                nextTok()
-                if tokVal != "HZ":
-                    raise ParseError(
-                        tokLn, tokVal, "Expecting 'HZ' after FREQUENCY cycles"
-                    )
-                nextTok()
+                enddr_state = StateTxt.index(tokVal)
+                tokType, tokVal, tokLn = nextTok(tup)
                 if tokVal != ";":
                     raise ParseError(
-                        tokLn, tokVal, "Expecting ';' after FREQUENCY cycles HZ"
+                        tokLn, tokVal, "Expecting ';' after ENDDR stable_state"
                     )
+                if doCOMMENTs:
+                    writeComment(outfile, tokLn, "ENDDR")
+                obuf = bytearray(2)
+                obuf[0] = XENDDR
+                # Page 10 of the March 1999 SVF spec shows that RESET is also allowed here.
+                # Yet the XSVF spec has no provision for that, and uses a non-standard, i.e.
+                # boolean argument to XENDDR which only handles two of the 3 intended states.
+                obuf[1] = 1 if enddr_state == DRPAUSE else 0
+                outfile.write(obuf)
 
-        elif tokVal == "TRST":
-            nextTok()
-            if tokVal not in trst_mode_allowed:
-                raise ParseError(
-                    tokLn, tokVal, "Expecting 'ON|OFF|Z|ABSENT' after TRST"
-                )
-            trst_mode = tokVal
-            nextTok()
-            if tokVal != ";":
-                raise ParseError(tokLn, tokVal, "Expecting ';' after TRST trst_mode")
-            if doCOMMENTs:
-                writeComment(output, tokLn, "TRST %s" % trst_mode)
-            obuf = bytearray(2)
-            obuf[0] = XTRST
-            obuf[1] = trst_mode_allowed.index(
-                trst_mode
-            )  # use the index as the binary argument to XTRST opcode
-            output.write(obuf)
+            elif tokVal == "ENDIR":
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal not in endir_state_allowed:
+                    raise ParseError(
+                        tokLn,
+                        tokVal,
+                        "Expecting 'stable_state' after ENDIR. (one of: IRPAUSE, IDLE)",
+                    )
+                endir_state = StateTxt.index(tokVal)
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal != ";":
+                    raise ParseError(
+                        tokLn, tokVal, "Expecting ';' after ENDIR stable_state"
+                    )
+                if doCOMMENTs:
+                    writeComment(outfile, tokLn, "ENDIR")
+                obuf = bytearray(2)
+                obuf[0] = XENDIR
+                # Page 10 of the March 1999 SVF spec shows that RESET is also allowed here.
+                # Yet the XSVF spec has no provision for that, and uses a non-standard, i.e.
+                # boolean argument to XENDDR which only handles two of the 3 intended states.
+                obuf[1] = 1 if endir_state == IRPAUSE else 0
+                outfile.write(obuf)
 
-        else:
-            raise ParseError(tokLn, tokVal, "Unknown token '%s'" % tokVal)
+            elif tokVal == "STATE":
+                tokType, tokVal, tokLn = nextTok(tup)
+                ln = tokLn
+                while tokVal != ";":
+                    if tokVal not in StateTxt:
+                        raise ParseError(
+                            tokLn, tokVal, "Expecting 'stable_state' after STATE"
+                        )
+                    stable_state = StateTxt.index(tokVal)
 
-except StopIteration:
-    if not expecting_eof:
-        print("Unexpected End of File at line ", tokLn)
+                    if doCOMMENTs and ln != -1:
+                        writeComment(outfile, ln, "STATE")
+                        ln = -1  # save comment only once
 
-except ParseError as pe:
-    print("\n", pe)
+                    obuf = bytearray(2)
+                    obuf[0] = XSTATE
+                    obuf[1] = stable_state
+                    outfile.write(obuf)
+                    tokType, tokVal, tokLn = nextTok(tup)
 
-finally:
-    # print( "closing file" )
-    cmdbuf[0] = XCOMPLETE
-    output.write(cmdbuf)
-    output.close()
+            elif tokVal == "FREQUENCY":
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal != ";":
+                    if tokType != "int" and tokType != "float":
+                        raise ParseError(
+                            tokLn, tokVal, "Expecting 'cycles HZ' after FREQUENCY"
+                        )
+                    frequency = tokVal
+                    tokType, tokVal, tokLn = nextTok(tup)
+                    if tokVal != "HZ":
+                        raise ParseError(
+                            tokLn, tokVal, "Expecting 'HZ' after FREQUENCY cycles"
+                        )
+                    tokType, tokVal, tokLn = nextTok(tup)
+                    if tokVal != ";":
+                        raise ParseError(
+                            tokLn, tokVal, "Expecting ';' after FREQUENCY cycles HZ"
+                        )
+
+            elif tokVal == "TRST":
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal not in trst_mode_allowed:
+                    raise ParseError(
+                        tokLn, tokVal, "Expecting 'ON|OFF|Z|ABSENT' after TRST"
+                    )
+                trst_mode = tokVal
+                tokType, tokVal, tokLn = nextTok(tup)
+                if tokVal != ";":
+                    raise ParseError(
+                        tokLn, tokVal, "Expecting ';' after TRST trst_mode"
+                    )
+                if doCOMMENTs:
+                    writeComment(outfile, tokLn, "TRST %s" % trst_mode)
+                obuf = bytearray(2)
+                obuf[0] = XTRST
+                obuf[1] = trst_mode_allowed.index(
+                    trst_mode
+                )  # use the index as the binary argument to XTRST opcode
+                outfile.write(obuf)
+
+            else:
+                raise ParseError(tokLn, tokVal, "Unknown token '%s'" % tokVal)
+
+    except StopIteration:
+        if not expecting_eof:
+            output.error("Failure", "SVF: Unexpected End of File at line ", tokLn)
+
+    except ParseError as pe:
+        output.error("Failure", f"SVF: {pe}")
+
+    finally:
+        # print( "closing file" )
+        cmdbuf[0] = XCOMPLETE
+        outfile.write(cmdbuf)
+
+    outfile.seek(0)
+    return outfile

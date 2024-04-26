@@ -1,4 +1,3 @@
-import serial.tools.list_ports
 from serial.tools.list_ports_common import ListPortInfo
 
 import sure
