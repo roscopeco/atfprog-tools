@@ -1,0 +1,14 @@
+#$ TOOL ABEL Atmel 1502 1918
+#$ MODULE test_cpld/toggle
+#$ JEDECFILE test_cpld/toggle
+#$ PINS 2 O:21 CLK:43 
+#$ NODES 0 
+.type fr
+.i 1
+.o 2
+.ilb CLK
+.ob O.T O.C
+.p 2
+-	1~
+1	~1
+.end

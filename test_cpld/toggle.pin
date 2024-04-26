@@ -1,0 +1,7 @@
+CHIP "test_cpld/toggle" ASSIGNED TO AN PLCC44
+TDI					: 7
+TMS					: 13
+O					: 21
+TDO					: 38
+TCK					: 32
+CLK					: 43
