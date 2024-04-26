@@ -1,4 +1,5 @@
 import serial.tools.list_ports
+from serial.serialutil import SerialException
 from tabulate import tabulate
 
 OUR_VID = 0x04D8
@@ -35,7 +36,38 @@ def _list_detail(programmers: list[list[str]]) -> None:
 
 
 def handle_query(args):
-    print("Query handler")
+    print()
+    print(f"Querying programmer '{args.programmer}'")
+
+    try:
+        port = serial.Serial(port=args.programmer, timeout=5)
+    except SerialException as e:
+        print(f"  => Unable to open programmer ({e})")
+        exit(2)
+
+    port.timeout = 2
+    port.flushInput()
+    port.flushOutput()
+    port.write(b"V")
+
+    ver1 = port.readline()
+    ver2 = port.readline()
+
+    if not ver1 or not ver2:
+        print("  => Timed out")
+
+    if ver1 != b"\r\n":
+        print("  => Malformed response")
+        exit(1)
+
+    verfields = ver2.decode("ascii").split(",")
+    if verfields[0] != "Q0":
+        print("  => Malformed response")
+        exit(1)
+
+    print(f"  => Firmware identifies as: {verfields[1].strip()}")
+    print()
+    exit(0)
 
 
 def find_programmers() -> list[dict[str, str]]:
