@@ -2,7 +2,7 @@ import argparse
 
 from atfu.converter.jesd3 import JESD3Parser
 from atfu.converter.svfeventhandler import SVFEventHandler
-from atfu.converter.device import *
+from atfu.converter.device import ATF15xxInstr
 
 
 def read_jed(file):
@@ -21,12 +21,12 @@ class ATFSVFEventHandler(SVFEventHandler):
     svf_endir = ignored
     svf_enddr = ignored
     svf_hir = ignored
-    svf_sir = ignored
+    # svf_sir = ignored
     svf_tir = ignored
     svf_hdr = ignored
-    svf_sdr = ignored
+    # svf_sdr = ignored
     svf_tdr = ignored
-    svf_runtest = ignored
+    # svf_runtest = ignored
     svf_piomap = ignored
     svf_pio = ignored
 
@@ -37,24 +37,24 @@ class ATFSVFEventHandler(SVFEventHandler):
         self.data = b""
         self.bits = {}
 
-    def svf_sir(self, tdi, smask, tdo, mask):
-        self.ir = int.from_bytes(tdi.tobytes(), "little")
-        if self.ir == ATF15xxInstr.ISC_LATCH_ERASE:
-            self.erase = True
-        if self.ir == ATF15xxInstr.ISC_DATA:
-            self.erase = False
+    # def svf_sir(self, tdi, smask, tdo, mask):
+    #     self.ir = int.from_bytes(tdi.tobytes(), "little")
+    #     if self.ir == ATF15xxInstr.ISC_LATCH_ERASE:
+    #         self.erase = True
+    #     if self.ir == ATF15xxInstr.ISC_DATA:
+    #         self.erase = False
 
-    def svf_sdr(self, tdi, smask, tdo, mask):
-        if self.ir == ATF15xxInstr.ISC_ADDRESS:
-            self.addr = int.from_bytes(tdi.tobytes(), "little")
-        if (self.ir & ~0x3) == ATF15xxInstr.ISC_DATA:
-            self.data = tdi
+    # def svf_sdr(self, tdi, smask, tdo, mask):
+    #     if self.ir == ATF15xxInstr.ISC_ADDRESS:
+    #         self.addr = int.from_bytes(tdi.tobytes(), "little")
+    #     if (self.ir & ~0x3) == ATF15xxInstr.ISC_DATA:
+    #         self.data = tdi
 
-    def svf_runtest(
-        self, run_state, run_count, run_clock, min_time, max_time, end_state
-    ):
-        if not self.erase and self.ir == ATF15xxInstr.ISC_PROGRAM_ERASE:
-            self.bits[self.addr] = self.data
+    # def svf_runtest(
+    #     self, run_state, run_count, run_clock, min_time, max_time, end_state
+    # ):
+    #     if not self.erase and self.ir == ATF15xxInstr.ISC_PROGRAM_ERASE:
+    #         self.bits[self.addr] = self.data
 
 
 def write_svf(file, svf_bits, device, *, comment):
@@ -157,8 +157,6 @@ class ATFFileType(argparse.FileType):
     def __call__(self, value):
         file = super().__call__(value)
         filename = file.name.lower()
-        if not (filename.endswith(".jed") or filename.endswith(".svf")):
-            raise argparse.ArgumentTypeError(
-                "{} is not a JED or SVF file".format(filename)
-            )
+        if not filename.endswith(".jed"):
+            raise argparse.ArgumentTypeError("{} is not a JED file".format(filename))
         return file

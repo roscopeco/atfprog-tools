@@ -35,7 +35,7 @@ def _arg_parser():
         help="Enable debugging output (can be noisy!)",
     )
 
-    subs = parser.add_subparsers(required=True)
+    subs = parser.add_subparsers(dest="{program,erase,check,programmer}", required=True)
 
     # Program
     program = subs.add_parser("program", help="Program an ATF150x device")

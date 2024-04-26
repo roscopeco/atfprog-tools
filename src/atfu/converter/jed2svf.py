@@ -15,7 +15,7 @@ def jed2svf(
     # Underlying code expects a text reader, not binary...
     inname = infile.name
     infile.close()
-    infile = open(infile.name, "r")
+    infile = open(inname, "r")
 
     if device == "ATF1502":
         c_device = ATF1502ASDevice
@@ -42,7 +42,7 @@ def jed2svf(
     else:
         output.error(
             "Bug",
-            f"jed2svf called on non-JED; Please report: https://github.com/roscopeco/atfprog-tools/issues",
+            "jed2svf called on non-JED; Please report: https://github.com/roscopeco/atfprog-tools/issues",
         )
         exit(1000)
 

@@ -465,7 +465,7 @@ def svf2xsvf(output: Output, infile: io.BufferedReader) -> io.BufferedReader:
     enddr_state = IDLE
     endir_state = IDLE
 
-    frequency = 1.00e006  # HZ;
+    # frequency = 1.00e006  # HZ;
 
     # change detection for xsdrsize and xtdomask
     xsdrsize = -1  # the last one sent, send only on change
@@ -662,7 +662,7 @@ def svf2xsvf(output: Output, infile: io.BufferedReader) -> io.BufferedReader:
                 tokType, tokVal, tokLn = nextTok(tup)
                 min_time = 0
                 run_count = 0
-                max_time = 600  # ten minutes
+                # max_time = 600  # ten minutes
                 if tokVal in run_state_allowed:
                     run_state = StateTxt.index(tokVal)
                     end_state = run_state  # bottom of page 17 of SVF spec
@@ -704,7 +704,7 @@ def svf2xsvf(output: Output, infile: io.BufferedReader) -> io.BufferedReader:
                             tokVal,
                             "Expecting 'max_time' after RUNTEST [run_state] min_time SEC MAXIMUM",
                         )
-                    max_time = tokVal
+                    # max_time = tokVal
                     tokType, tokVal, tokLn = nextTok(tup)
                     if tokVal != "SEC":
                         raise ParseError(
@@ -826,7 +826,7 @@ def svf2xsvf(output: Output, infile: io.BufferedReader) -> io.BufferedReader:
                         raise ParseError(
                             tokLn, tokVal, "Expecting 'cycles HZ' after FREQUENCY"
                         )
-                    frequency = tokVal
+                    # frequency = tokVal
                     tokType, tokVal, tokLn = nextTok(tup)
                     if tokVal != "HZ":
                         raise ParseError(

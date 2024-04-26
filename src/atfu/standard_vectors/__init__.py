@@ -25,12 +25,11 @@ def find_vector_file(operation: str, device_key: str):
 
 
 def atf_device_key(number: int):
-    match number:
-        case 1502:
-            return ATF_1502
-        case 1504:
-            return ATF_1504
-        case 1508:
-            return ATF_1508
-        case _:
-            raise ValueError(f"{number} is not valid supported ATF CPLD device")
+    if number == 1502:
+        return ATF_1502
+    elif number == 1504:
+        return ATF_1504
+    elif number == 1508:
+        return ATF_1508
+    else:
+        raise ValueError(f"{number} is not valid supported ATF CPLD device")

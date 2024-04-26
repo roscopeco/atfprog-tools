@@ -51,7 +51,7 @@ def find_programmers() -> list[dict[str, str]]:
     ]
 
 
-def default_programmer() -> dict[str, str] | None:
+def default_programmer() -> dict[str, str]:
     default = find_programmers()[0:1]
     if default:
         return default[0]
@@ -59,7 +59,7 @@ def default_programmer() -> dict[str, str] | None:
         return None
 
 
-def default_programmer_path() -> str | None:
+def default_programmer_path() -> str:
     default = default_programmer()
     if default:
         return default["Device"]

@@ -125,76 +125,75 @@ class JtagProgrammer(object):
             command = chr(line[0])
             argument = line[1:].decode("ascii")
 
-            match command:
-                case "S":
-                    # Send data
-                    try:
-                        num_bytes = int(
-                            argument
-                        )  # Blindly try to continue; _should_ only happen
-                        # when programmer has trace debug on and is dumping an
-                        # XCOMMENT(STATE)
-                    except:
-                        print(
-                            f"{cbYellow}WARN{cReset}: Invalid 'S' command from programmer; Skipped..."
-                        )
-                        continue
-
-                    xsvf_data = fd.read(num_bytes)
-                    bytes_written += len(xsvf_data)
-                    self.update_hashes(xsvf_data)
-                    xsvf_data += b"\xFF" * (num_bytes - len(xsvf_data))
-                    self._serial.write(xsvf_data)
-                    if self._verbosity > 0:
-                        progress.update(n=num_bytes)
-
-                case "R":
-                    # Ready
-                    self.initialize_hashes()
-                    if self._verbosity > 1 and not self._no_filename:
-                        print("File: %s" % os.path.realpath(fd.name))
-                    self._start_time = time.time()
-
-                case "Q":
-                    # Quit (maybe error)
-                    if not okquit:
-                        okquit = True
-                        continue
-
-                    if self._verbosity > 0:
-                        progress.close()
-
-                    # first field is the error code, second is the message.
-                    args = argument.split(",")
-                    self._error_code = int(args[0])
-                    if self._verbosity > 1:
-                        print("Quit: {1:s} ({0:d}).".format(self._error_code, args[1]))
-                    self.print_hashes(self._error_code == 0)
-                    return self._error_code == 0
-
-                case "D":
-                    # Debug
-                    if self._verbosity > 1:
-                        self.print_lf()
-                        print("Device:", argument)
-
-                case "!":
-                    # Important
-                    if self._verbosity > 1:
-                        # Can close this here, programmer only importants when done...
-                        #
-                        # (unless built with trace but that'll only be internal anyhow...)
-                        progress.close()
-
-                        self.print_lf()
-                        print(f"{cbGreen}>>>{cReset} ", argument)
-
-                case _:
-                    self.print_lf()
+            if command == "S":
+                # Send data
+                try:
+                    num_bytes = int(
+                        argument
+                    )  # Blindly try to continue; _should_ only happen
+                    # when programmer has trace debug on and is dumping an
+                    # XCOMMENT(STATE)
+                except Exception:
                     print(
-                        "Unknown command from programmer:",
-                        line.translate(JtagProgrammer._translate_str),
+                        f"{cbYellow}WARN{cReset}: Invalid 'S' command from programmer; Skipped..."
                     )
+                    continue
+
+                xsvf_data = fd.read(num_bytes)
+                bytes_written += len(xsvf_data)
+                self.update_hashes(xsvf_data)
+                xsvf_data += b"\xFF" * (num_bytes - len(xsvf_data))
+                self._serial.write(xsvf_data)
+                if self._verbosity > 0:
+                    progress.update(n=num_bytes)
+
+            elif command == "R":
+                # Ready
+                self.initialize_hashes()
+                if self._verbosity > 1 and not self._no_filename:
+                    print("File: %s" % os.path.realpath(fd.name))
+                self._start_time = time.time()
+
+            elif command == "Q":
+                # Quit (maybe error)
+                if not okquit:
+                    okquit = True
+                    continue
+
+                if self._verbosity > 0:
+                    progress.close()
+
+                # first field is the error code, second is the message.
+                args = argument.split(",")
+                self._error_code = int(args[0])
+                if self._verbosity > 1:
+                    print("Quit: {1:s} ({0:d}).".format(self._error_code, args[1]))
+                self.print_hashes(self._error_code == 0)
+                return self._error_code == 0
+
+            elif command == "D":
+                # Debug
+                if self._verbosity > 1:
+                    self.print_lf()
+                    print("Device:", argument)
+
+            elif command == "!":
+                # Important
+                if self._verbosity > 1:
+                    # Can close this here, programmer only importants when done...
+                    #
+                    # (unless built with trace but that'll only be internal anyhow...)
+                    progress.close()
+
+                    self.print_lf()
+                    print(f"{cbGreen}>>>{cReset} ", argument)
+
+            else:
+                self.print_lf()
+                print(
+                    "Unknown command from programmer:",
+                    line.translate(JtagProgrammer._translate_str),
+                )
 
     def upload_all_files(self, fd_list):
         ok = True
