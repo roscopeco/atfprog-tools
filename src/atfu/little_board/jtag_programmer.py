@@ -42,7 +42,8 @@ class JtagProgrammer(object):
         no_success=False,
     ):
         self._operation = operation
-        self._serial = serial.Serial(port=device)
+        self._device = device
+        self._serial = None
         self._need_lf = False
         self._file_size = 0
         self._sum = 0
@@ -54,6 +55,9 @@ class JtagProgrammer(object):
         self._no_success = no_success
 
     def init_programmer(self, mode):
+        if self._serial is None:
+            serial.Serial(port=self._device)
+
         self._serial.flushInput()
         self._serial.flushOutput()
         self._serial.write(mode)

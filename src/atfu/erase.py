@@ -58,5 +58,7 @@ def perform_erase(args, no_success=True) -> int:
             no_filename=True,
             no_success=no_success,
         )
-        prog.upload_one_file(vector_fd, JtagProgrammer.MODE_NORMAL)
-        return 0
+        if prog.upload_one_file(vector_fd, JtagProgrammer.MODE_NORMAL):
+            return 0
+        else:
+            return 1
