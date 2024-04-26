@@ -131,8 +131,11 @@ options:
 ### Copyright
 
 Copyright ©2024 The Really Old-School Company Limited.
+
 Portions Copyright (C) 2019-2020 whitequark@whitequark.org
+
 Portions Copyright (c) 2015 Marcelo Roberto Jimenez <marcelo.jimenez (at) gmail (dot) com>
+
 Portions Copyright 2008, SoftPLC Corporation  http://softplc.com [Dick Hollenbeck dick@softplc.com]
 
 Mostly MIT License, portions under other licenses - see LICENSE.md & source code comments.
