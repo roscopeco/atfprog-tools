@@ -6,7 +6,7 @@
 This repository contains the official standard programmer software and utilities 
 for the Little ATF150x Programmer Board.
 
-![Picture of The Little ATF150x Programmer](images/board.jpeg)
+![Picture of The Little ATF150x Programmer](https://github.com/roscopeco/atfprog-tools/raw/main/images/board.jpeg)
 
 This is a plug-and-play USB-connected programmer and breakout board for
 Atmel (Microchip) ATF150{2,4,8} CPLDs, featuring:
@@ -21,15 +21,56 @@ on the [rosco_m68k store](https://store.rosco-m68k.com) 🥳
 
 ### Software Installation
 
-> **Note** pypi installation **coming soon**!
+Prerequisites:
 
-Requirements: Python 3.9+ and the libraries in `requirements.txt`.
+* Recent macOS, Linux or Windows operating system
+* Working Python (3.9+) installation
+  * Recent macOS and Linux will likely have this by default
+  * If not, it can be installed with your package manager
+  * Windows users can download from https://www.python.org/downloads/windows
+  * `python` and `pip` should be in your `PATH` for easiest installation experience
+
+> **Note**: on some systems, your `python` may instead be named `python3`, with `pip`
+> being similarly named `pip3`. As long as Python is version 3.9 or higher 
+> (as reported by `python3 --version`) it should work just fine.
+
+#### Latest release
+
+With a Python environment that meets these requirements, installation
+is as simple as:
+
+```shell
+pip install little-atf-programmer
+```
+
+> **Note**: on Windows, when installing you may receive a message from pip
+> warning that the installed binaries are not in your `PATH`. If you see this,
+> for easier installation you may wish to add the directory in the warning
+> to your `PATH` by editing in
+> `Control Panel / System / Advanced / Environment Variables.`
+
+#### Latest development build
+
+If you want to install the latest development build, you can do so at 
+any time with:
+
+```shell
+pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple little-atf-programmer
+```
+
+#### From source
+
+Developers and project collaborators may wish to install from source. 
+
+To do this, clone the project from GitHub (or grab a source tarball).
+
+Then either run `python src/atfu.py` or install with pip if you like:
 
 ```shell
 pip install .
 ```
 
-If you're developing this, you'll probably want to install it `--editable`.
+If you're hacking on the code, you'll probably want to install it `--editable`.
 
 ### Usage
 
