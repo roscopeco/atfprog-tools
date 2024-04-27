@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "little-atf-programmer"
-version = "2024.1008"
+version = "2024.1009-dev"
 description = "Little ATF150x Programmer Board utility programs"
 readme = "README.md"
 authors = [{ name = "The Really Old-School Company Limited", email = "info@rosco-m68k.com" }]
@@ -38,7 +38,7 @@ Homepage = "https://github.com/roscopeco/atfprog-tools"
 "atfu.standard_vectors" = ["*.xsvf"]
 
 [tool.bumpver]
-current_version = "2024.1008"
+current_version = "2024.1009-dev"
 version_pattern = "YYYY.BUILD[-TAG]"
 commit_message = "bump version {old_version} -> {new_version}"
 tag_message = "{new_version}"
