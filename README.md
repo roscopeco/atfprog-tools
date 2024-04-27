@@ -49,15 +49,6 @@ pip install little-atf-programmer
 > to your `PATH` by editing in
 > `Control Panel / System / Advanced / Environment Variables.`
 
-#### Latest development build
-
-If you want to install the latest development build, you can do so at 
-any time with:
-
-```shell
-pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple little-atf-programmer
-```
-
 #### From source
 
 Developers and project collaborators may wish to install from source. 
