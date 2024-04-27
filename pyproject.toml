@@ -51,7 +51,7 @@ push = true
 "pyproject.toml" = [
     'version = "{version}"',
 ]
-"src/atfu.py" = [
+"src/atfu/command.py" = [
     'VERSION = "{version}"',
 ]
 
