@@ -23,7 +23,7 @@ dependencies = [
     "progress==1.6",
     "tqdm==4.66.2",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 dev = ["black", "bumpver", "pre-commit", "isort", "pip-tools", "pytest", "sure", "httpretty"]
