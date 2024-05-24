@@ -55,6 +55,8 @@ doCOMMENTs = False  # Save XCOMMENTs in the output xsvf file
 # file_encoding = "ISO-8859-1"
 file_encoding = "utf-8"
 
+tokLn = 0
+inputFilename = ""
 
 xrepeat = 0  # argument to XREPEAT, gives retry count for masked compares
 
@@ -439,7 +441,7 @@ def svf2xsvf(output: Output, infile: io.BufferedReader) -> io.BufferedReader:
     # for tokenType, tokenValue, ln in tokens: print( "line %d: %s" % (ln, tokenType), tokenValue )
 
     # -----<parser>-----------------------------------------------------------------
-
+    global tokLn
     tokVal = tokType = tokLn = None
 
     tup = iter(tokens)

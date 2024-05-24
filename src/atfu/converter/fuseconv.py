@@ -112,11 +112,13 @@ def write_svf(file, svf_bits, device, *, comment):
         file.write(
             "SIR 10 TDI ({:03x});\n".format(ATF15xxInstr.ISC_DATA | (address >> 8))
         )
-        file.write(
-            "SDR {} TDI ({:0{}x});\n".format(
-                len(data), int(data.to01()[::-1], 2), len(data) // 4
-            )
-        )
+
+        # TODO this is a bit of a hack...
+        hexout = "{:0{}x}".format(int(data.to01()[::-1], 2), len(data) // 4)
+        if (len(data) // 4) & 0x1:
+            hexout = "0" + hexout
+
+        file.write("SDR {} TDI ({});\n".format(len(data), hexout))
         file.write("SIR 10 TDI ({:03x});\n".format(ATF15xxInstr.ISC_PROGRAM_ERASE))
         file.write("RUNTEST IDLE 30E-3 SEC;\n")
         emit_unknown()
@@ -130,13 +132,17 @@ def write_svf(file, svf_bits, device, *, comment):
         file.write(
             "SIR 10 TDI ({:03x});\n".format(ATF15xxInstr.ISC_DATA | (address >> 8))
         )
+
+        # TODO this is the same hack as above...
+        hexout = "{:0{}x}".format(int(data.to01()[::-1], 2), len(data) // 4)
+        if (len(data) // 4) & 0x1:
+            hexout = "0" + hexout
+
         file.write(
-            "SDR {} TDI ({:0{}x})\n\tTDO ({:0{}x})\n\tMASK ({:0{}x});\n".format(
+            "SDR {} TDI ({})\n\tTDO ({})\n\tMASK ({:0{}x});\n".format(
                 len(data),
-                int(data.to01()[::-1], 2),
-                len(data) // 4,
-                int(data.to01()[::-1], 2),
-                len(data) // 4,
+                hexout,
+                hexout,
                 (1 << len(data)) - 1,
                 len(data) // 4,
             )
