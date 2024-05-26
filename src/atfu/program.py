@@ -55,6 +55,11 @@ def _process_input_svf(output: Output, file: io.BufferedReader) -> io.BufferedRe
     with file:  # ensure this stays open until we're done so it doesn't get deleted...
         # Bit of weirdness here, the underlying code needs the file to be text...
         inname = file.name
-        infile = open(inname, "r")
+
+        try:
+            infile = open(inname, "r")
+        except PermissionError:
+            # _Probably_ on Windows, where it doesn't matter anyway...
+            infile = file
 
         return svf2xsvf(output=output, infile=infile)
