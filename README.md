@@ -16,8 +16,7 @@ Atmel (Microchip) ATF150{2,4,8} CPLDs, featuring:
 * Ability to drive ICSP via the JTAG headers (single-device only - chains **not** currently supported)
 * Ability to erase JTAG-locked and secured devices
 
-The board is currently in community testing, and will be available soon 
-on the [rosco_m68k store](https://store.rosco-m68k.com) 🥳
+The board is **now available** on the on the [rosco_m68k store](https://store.rosco-m68k.com/products/little-atf-programmer) 🥳
 
 ### Software Installation
 
