@@ -1,4 +1,5 @@
 import argparse
+import re
 
 from atfu.converter.jesd3 import JESD3Parser
 from atfu.converter.svfeventhandler import SVFEventHandler
@@ -6,7 +7,24 @@ from atfu.converter.device import ATF15xxInstr
 
 
 def read_jed(file):
-    parser = JESD3Parser(file.read())
+    jed = file.read()
+
+    # TODO
+    #
+    # CUPL will emit weird test vectors (with the max vector QV number *after* the
+    # first V0001, which _seems_ to be off-spec. The jesd3 code can't handle this.
+    #
+    # We don't care about test vectors anyway, but we need to at least be able to
+    # checksum them, so for now we'll just refuse to process a jed that has vectors
+    # in it...
+    #
+    # Leaving the regexes below in case they're useful late (to be able to just
+    # remove the problem vectors **by force**). See also jesd3.py:
+    #
+    # jed = re.sub(r'\r?\nQV[0-9]+\*', '', jed)
+    # jed = re.sub(r'V[0-9+][^\r\n]+\r?\n?\*?', '', jed)
+
+    parser = JESD3Parser(jed)
     parser.parse()
     return parser.fuse, parser.design_spec
 

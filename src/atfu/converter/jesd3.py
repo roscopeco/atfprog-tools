@@ -5,7 +5,7 @@
 
 import re
 from bitarray import bitarray
-
+from atfu.output import global_output
 
 __all__ = ["JESD3Parser", "JESD3ParsingError"]
 
@@ -47,7 +47,11 @@ class JESD3Lexer:
         (r"G", r"([01])"),
         (r"X", r"([01])"),
         (r"P", r"([ \r\n]*[0-9]+)+"),
-        (r"V", r"([0-9]+)[ \r\n]+([0-9BCDFHTUXZ]+)"),
+        # This next one _can_ handle the QV (and has all vector types) but still won't checksum
+        #
+        # TODO fix this properly (currently we just error out with a "helpful" message)
+        #        (r"V", r"([0-9]+)[ \r\n]+(?:QV\d+\* )?([0-9BCDFHLNPTUXZ]+)"),
+        (r"V", r"([0-9]+)[ \r\n]+([0-9BCDFHLNPTUXZ]+)"),
         (r"S", r"([01]+)"),
         (r"R", r"([0-9A-F]{8})"),
         (r"T", r"([0-9]+)"),
@@ -105,10 +109,17 @@ class JESD3Lexer:
                 token = match.group(0)
                 match = self._field_res[token].match(self.buffer, self.position)
                 if not match:
-                    raise JESD3ParsingError(
-                        "field %s has invalid format at line %d, column %d"
-                        % (token, *self.line_column())
-                    )
+                    if token == "V":
+                        global_output().error(
+                            "Failure",
+                            "JEDEC file contains test vectors, which cannot be processed by this tool. Please rebuild without them.",
+                        )
+                        exit(1000)
+                    else:
+                        raise JESD3ParsingError(
+                            "field %s has invalid format at line %d, column %d"
+                            % (token, *self.line_column())
+                        )
                 else:
                     self.checksum += sum(map(ord, match.group(0)))
 

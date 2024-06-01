@@ -11,10 +11,14 @@ else:
     cbYellow = ""
     cReset = ""
 
+the_output = None
+
 
 class Output:
     def __init__(self, args):
+        global the_output
         self._verbosity = self._verbosity(args)
+        the_output = self
 
     def verbosity(self):
         return self._verbosity
@@ -46,3 +50,7 @@ class Output:
             return 2
 
         return 1
+
+
+def global_output() -> Output:
+    return the_output
