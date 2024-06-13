@@ -13,7 +13,7 @@ def test_parse_empty_jed():
         """
     )
 
-    result = parser.jes3dc()
+    result = parser.jesd3c()
 
     result.spec_field().should_not.be.none
     result.spec_field().spec().should_not.be.none
@@ -37,7 +37,7 @@ def test_parse_empty_jed_multiline_spec():
         """
     )
 
-    result = parser.jes3dc()
+    result = parser.jesd3c()
 
     result.spec_field().should_not.be.none
     result.spec_field().spec().should_not.be.none
@@ -59,7 +59,7 @@ def test_parse_jed_with_checksum():
         """
     )
 
-    result = parser.jes3dc()
+    result = parser.jesd3c()
 
     result.spec_field().should_not.be.none
     result.spec_field().spec().should_not.be.none

@@ -117,6 +117,69 @@ def test_parse_fuse_checksum_field_ffff():
     result.xmit_cksum().getText().should.be.equal_to("FFFF")
 
 
+def test_parse_electrical_data_field_bin_1():
+    _, result = _test_electrical_data_field_bin("E1*")
+
+    result.fuse_data().should_not.be.none
+    result.fuse_data().getText().should.be.equal_to("1")
+
+
+def test_parse_electrical_data_field_bin_2():
+    _, result = _test_electrical_data_field_bin("E10*")
+
+    result.fuse_data().should_not.be.none
+    result.fuse_data().getText().should.be.equal_to("10")
+
+
+def test_parse_electrical_data_field_bin_4_split():
+    _, result = _test_electrical_data_field_bin("E10 01*")
+
+    result.fuse_data().should_not.be.none
+    result.fuse_data().getText().should.be.equal_to("1001")
+
+
+def test_parse_electrical_data_field_bin_4_split_newline():
+    _, result = _test_electrical_data_field_bin("E10\n01*")
+
+    result.fuse_data().should_not.be.none
+    result.fuse_data().getText().should.be.equal_to("1001")
+
+
+def test_parse_electrical_data_field_hex_1():
+    _, result = _test_electrical_data_field_hex("EH1*")
+
+    result.hex_fuse_data().should_not.be.none
+    result.hex_fuse_data().getText().should.be.equal_to("1")
+
+
+def test_parse_electrical_data_field_hex_f():
+    _, result = _test_electrical_data_field_hex("EHF*")
+
+    result.hex_fuse_data().should_not.be.none
+    result.hex_fuse_data().getText().should.be.equal_to("F")
+
+
+def test_parse_electrical_data_field_hex_2():
+    _, result = _test_electrical_data_field_hex("EH13*")
+
+    result.hex_fuse_data().should_not.be.none
+    result.hex_fuse_data().getText().should.be.equal_to("13")
+
+
+def test_parse_electrical_data_field_hex_4_split():
+    _, result = _test_electrical_data_field_hex("EH1D 2F*")
+
+    result.hex_fuse_data().should_not.be.none
+    result.hex_fuse_data().getText().should.be.equal_to("1D2F")
+
+
+def test_parse_electrical_data_field_bin_4_split_newline():
+    _, result = _test_electrical_data_field_hex("EH12\n34*")
+
+    result.hex_fuse_data().should_not.be.none
+    result.hex_fuse_data().getText().should.be.equal_to("1234")
+
+
 def _test_empty_field(s: str):
     parser = _string_parser(s)
 
@@ -129,6 +192,7 @@ def _test_empty_field(s: str):
     result.fuse_default_field().should.be.none
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
 
     return parser, result.empty_field()
 
@@ -145,6 +209,7 @@ def _test_note_field(s: str):
     result.fuse_default_field().should.be.none
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
 
     return parser, result.note_field()
 
@@ -161,6 +226,7 @@ def _test_value_field(s: str):
     result.fuse_default_field().should.be.none
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
 
     return parser, result.value_field()
 
@@ -207,6 +273,7 @@ def _test_fuse_default_field(s: str):
     result.fuse_default_field().should_not.be.none
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
 
     return parser, result.fuse_default_field()
 
@@ -223,6 +290,7 @@ def _test_fuse_list_field(s: str):
     result.fuse_default_field().should.be.none
     result.fuse_list_field().should_not.be.none
     result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
 
     return parser, result.fuse_list_field()
 
@@ -239,8 +307,44 @@ def _test_fuse_checksum_field(s: str):
     result.fuse_default_field().should.be.none
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should_not.be.none
+    result.electrical_data_field().should.be.none
 
     return parser, result.fuse_checksum_field()
+
+
+def _test_electrical_data_field(s: str):
+    parser = _string_parser(s)
+
+    result = parser.field()
+
+    # Common tests
+    result.empty_field().should.be.none
+    result.note_field().should.be.none
+    result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
+    result.fuse_list_field().should.be.none
+    result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should_not.be.none
+
+    return parser, result.electrical_data_field()
+
+
+def _test_electrical_data_field_bin(s: str):
+    parser, result = _test_electrical_data_field(s)
+
+    result.electrical_data_field_bin().should_not.be.none
+    result.electrical_data_field_hex().should.be.none
+
+    return parser, result.electrical_data_field_bin()
+
+
+def _test_electrical_data_field_hex(s: str):
+    parser, result = _test_electrical_data_field(s)
+
+    result.electrical_data_field_bin().should.be.none
+    result.electrical_data_field_hex().should_not.be.none
+
+    return parser, result.electrical_data_field_hex()
 
 
 def _string_lexer(s: str):

@@ -9,12 +9,12 @@ else:
 
 # This class defines a complete listener for a parse tree produced by Jesd3cParser.
 class Jesd3cListener(ParseTreeListener):
-    # Enter a parse tree produced by Jesd3cParser#jes3dc.
-    def enterJes3dc(self, ctx: Jesd3cParser.Jes3dcContext):
+    # Enter a parse tree produced by Jesd3cParser#jesd3c.
+    def enterJesd3c(self, ctx: Jesd3cParser.Jesd3cContext):
         pass
 
-    # Exit a parse tree produced by Jesd3cParser#jes3dc.
-    def exitJes3dc(self, ctx: Jesd3cParser.Jes3dcContext):
+    # Exit a parse tree produced by Jesd3cParser#jesd3c.
+    def exitJesd3c(self, ctx: Jesd3cParser.Jesd3cContext):
         pass
 
     # Enter a parse tree produced by Jesd3cParser#spec_field.
@@ -113,14 +113,6 @@ class Jesd3cListener(ParseTreeListener):
     def exitFuse_list_field(self, ctx: Jesd3cParser.Fuse_list_fieldContext):
         pass
 
-    # Enter a parse tree produced by Jesd3cParser#fuse_checksum_field.
-    def enterFuse_checksum_field(self, ctx: Jesd3cParser.Fuse_checksum_fieldContext):
-        pass
-
-    # Exit a parse tree produced by Jesd3cParser#fuse_checksum_field.
-    def exitFuse_checksum_field(self, ctx: Jesd3cParser.Fuse_checksum_fieldContext):
-        pass
-
     # Enter a parse tree produced by Jesd3cParser#fuse_number.
     def enterFuse_number(self, ctx: Jesd3cParser.Fuse_numberContext):
         pass
@@ -135,6 +127,56 @@ class Jesd3cListener(ParseTreeListener):
 
     # Exit a parse tree produced by Jesd3cParser#fuse_data.
     def exitFuse_data(self, ctx: Jesd3cParser.Fuse_dataContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#fuse_checksum_field.
+    def enterFuse_checksum_field(self, ctx: Jesd3cParser.Fuse_checksum_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#fuse_checksum_field.
+    def exitFuse_checksum_field(self, ctx: Jesd3cParser.Fuse_checksum_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#electrical_data_field.
+    def enterElectrical_data_field(
+        self, ctx: Jesd3cParser.Electrical_data_fieldContext
+    ):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#electrical_data_field.
+    def exitElectrical_data_field(self, ctx: Jesd3cParser.Electrical_data_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#electrical_data_field_bin.
+    def enterElectrical_data_field_bin(
+        self, ctx: Jesd3cParser.Electrical_data_field_binContext
+    ):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#electrical_data_field_bin.
+    def exitElectrical_data_field_bin(
+        self, ctx: Jesd3cParser.Electrical_data_field_binContext
+    ):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#electrical_data_field_hex.
+    def enterElectrical_data_field_hex(
+        self, ctx: Jesd3cParser.Electrical_data_field_hexContext
+    ):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#electrical_data_field_hex.
+    def exitElectrical_data_field_hex(
+        self, ctx: Jesd3cParser.Electrical_data_field_hexContext
+    ):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#hex_fuse_data.
+    def enterHex_fuse_data(self, ctx: Jesd3cParser.Hex_fuse_dataContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#hex_fuse_data.
+    def exitHex_fuse_data(self, ctx: Jesd3cParser.Hex_fuse_dataContext):
         pass
 
     # Enter a parse tree produced by Jesd3cParser#empty_field.

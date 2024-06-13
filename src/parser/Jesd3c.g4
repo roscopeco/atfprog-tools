@@ -11,7 +11,7 @@ options {
     tokenVocab = Jesd3cLexer; 
 }
 
-jes3dc
+jesd3c
  : STX spec_field field* ETX xmit_cksum
  ;
 
@@ -30,6 +30,7 @@ field
  | fuse_default_field
  | fuse_list_field
  | fuse_checksum_field
+ | electrical_data_field
  ;
 
 note_field
@@ -66,10 +67,6 @@ fuse_list_field
  : FUSE_LIST_ID fuse_number fuse_data TERMINATOR
  ;
 
-fuse_checksum_field
- : FUSE_CKSUM_ID xmit_cksum TERMINATOR
- ;
- 
 fuse_number
  : NUMBER
  | BINARY_NUMBER
@@ -77,6 +74,29 @@ fuse_number
 
 fuse_data
  : BINARY_NUMBER BINARY_NUMBER*
+ | BINARY_DIGIT
+ ;
+
+fuse_checksum_field
+ : FUSE_CKSUM_ID xmit_cksum TERMINATOR
+ ;
+
+electrical_data_field
+ : electrical_data_field_bin
+ | electrical_data_field_hex
+ ;
+
+electrical_data_field_bin
+ : ELEC_BIN_ID fuse_data TERMINATOR
+ ;
+
+electrical_data_field_hex
+ : ELEC_HEX_ID hex_fuse_data TERMINATOR
+ ;
+
+hex_fuse_data
+ : (HEX_NUMBER | NUMBER | BINARY_NUMBER) (HEX_NUMBER | NUMBER | BINARY_NUMBER)*
+ | HEX_DIGIT
  ;
 
 empty_field
