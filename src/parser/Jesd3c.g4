@@ -5,7 +5,15 @@ options {
 }
 
 jes3dc
- : STX field* ETX xmit_cksum
+ : STX spec_field field* ETX xmit_cksum
+ ;
+
+spec_field
+ : spec? TERMINATOR
+ ;
+
+spec
+ : NOTE NOTE*
  ;
 
 field
@@ -15,11 +23,11 @@ field
  ;
 
 note_field
- : NOTE_ID note? NOTE_TERM
+ : NOTE_ID note? TERMINATOR
  ;
 
 note
- : NOTE
+ : NOTE NOTE*
  ;
 
 fuse_list_field

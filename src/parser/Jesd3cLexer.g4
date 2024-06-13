@@ -1,20 +1,22 @@
 lexer grammar Jesd3cLexer;
 
-STX         : '\u0002';
+STX         : '\u0002'                  -> pushMode(NOTE_MODE);
 ETX         : '\u0003';
 TERMINATOR  : '*';
 
 NOTE_ID     : 'N' ('OTE')?              -> pushMode(NOTE_MODE);
 FUSE_LIST_ID: 'L';
 
+fragment
 DIGIT       : [0-9];
+
+fragment
+BINARY_DIGIT
+ : [0-1]
+ ;
 
 HEX_DIGIT
  : DIGIT | [A-F]
- ;
-
-BINARY_DIGIT
- : [0-1]
  ;
 
 BINARY_NUMBER
@@ -25,11 +27,17 @@ NUMBER
  : DIGIT DIGIT*
  ;
 
+fragment
+FIELD_CHARACTER
+ : '\u0020'..'\u0029'
+ | '\u002b'..'\u007e'
+ ;
+
 SPACE
  : [ \t\r\n] -> channel(HIDDEN)
  ;
 
 mode NOTE_MODE;
 
-NOTE        : ~('*')+;
-NOTE_TERM   : '*'                       -> popMode;
+NOTE        : FIELD_CHARACTER+;
+NOTE_TERM   : '*'                       -> popMode, type(TERMINATOR);

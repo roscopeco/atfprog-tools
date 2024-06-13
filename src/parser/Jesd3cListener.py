@@ -17,6 +17,22 @@ class Jesd3cListener(ParseTreeListener):
     def exitJes3dc(self, ctx: Jesd3cParser.Jes3dcContext):
         pass
 
+    # Enter a parse tree produced by Jesd3cParser#spec_field.
+    def enterSpec_field(self, ctx: Jesd3cParser.Spec_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#spec_field.
+    def exitSpec_field(self, ctx: Jesd3cParser.Spec_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#spec.
+    def enterSpec(self, ctx: Jesd3cParser.SpecContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#spec.
+    def exitSpec(self, ctx: Jesd3cParser.SpecContext):
+        pass
+
     # Enter a parse tree produced by Jesd3cParser#field.
     def enterField(self, ctx: Jesd3cParser.FieldContext):
         pass
