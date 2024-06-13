@@ -27,6 +27,7 @@ field
  : empty_field 
  | note_field
  | value_field
+ | fuse_default_field
  | fuse_list_field
  ;
 
@@ -54,6 +55,10 @@ value_pin_count_field
 
 value_vec_limit_field
  : VAL_VEC_ID NUMBER TERMINATOR
+ ;
+
+fuse_default_field
+ : DEFAULT_ID BINARY_DIGIT TERMINATOR
  ;
 
 fuse_list_field

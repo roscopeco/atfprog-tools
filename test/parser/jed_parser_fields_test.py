@@ -70,6 +70,19 @@ def test_parse_value_vec_limit_field():
     result.NUMBER().getText().should.be.equal_to("9001")
 
 
+def test_parse_fuse_default_field_0():
+    _, result = _test_fuse_default_field("F0*")
+
+    result.BINARY_DIGIT().should_not.be.none
+    result.BINARY_DIGIT().getText().should.be.equal_to("0")
+
+
+def test_parse_fuse_default_field_1():
+    _, result = _test_fuse_default_field("F1*")
+
+    result.BINARY_DIGIT().getText().should.be.equal_to("1")
+
+
 def test_parse_fuse_field_simple():
     _, result = _test_fuse_list_field("L0000 01010101*")
 
@@ -99,6 +112,7 @@ def _test_empty_field(s: str):
     result.empty_field().should_not.be.none
     result.note_field().should.be.none
     result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
     result.fuse_list_field().should.be.none
 
     return parser, result.empty_field()
@@ -113,6 +127,7 @@ def _test_note_field(s: str):
     result.empty_field().should.be.none
     result.note_field().should_not.be.none
     result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
     result.fuse_list_field().should.be.none
 
     return parser, result.note_field()
@@ -127,6 +142,7 @@ def _test_value_field(s: str):
     result.empty_field().should.be.none
     result.note_field().should.be.none
     result.value_field().should_not.be.none
+    result.fuse_default_field().should.be.none
     result.fuse_list_field().should.be.none
 
     return parser, result.value_field()
@@ -162,6 +178,21 @@ def _test_value_vec_limit_field(s: str):
     return parser, result.value_vec_limit_field()
 
 
+def _test_fuse_default_field(s: str):
+    parser = _string_parser(s)
+
+    result = parser.field()
+
+    # Common tests
+    result.empty_field().should.be.none
+    result.note_field().should.be.none
+    result.value_field().should.be.none
+    result.fuse_default_field().should_not.be.none
+    result.fuse_list_field().should.be.none
+
+    return parser, result.fuse_default_field()
+
+
 def _test_fuse_list_field(s: str):
     parser = _string_parser(s)
 
@@ -171,6 +202,7 @@ def _test_fuse_list_field(s: str):
     result.empty_field().should.be.none
     result.note_field().should.be.none
     result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
     result.fuse_list_field().should_not.be.none
 
     return parser, result.fuse_list_field()

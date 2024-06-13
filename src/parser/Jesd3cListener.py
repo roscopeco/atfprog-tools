@@ -97,6 +97,14 @@ class Jesd3cListener(ParseTreeListener):
     def exitValue_vec_limit_field(self, ctx: Jesd3cParser.Value_vec_limit_fieldContext):
         pass
 
+    # Enter a parse tree produced by Jesd3cParser#fuse_default_field.
+    def enterFuse_default_field(self, ctx: Jesd3cParser.Fuse_default_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#fuse_default_field.
+    def exitFuse_default_field(self, ctx: Jesd3cParser.Fuse_default_fieldContext):
+        pass
+
     # Enter a parse tree produced by Jesd3cParser#fuse_list_field.
     def enterFuse_list_field(self, ctx: Jesd3cParser.Fuse_list_fieldContext):
         pass

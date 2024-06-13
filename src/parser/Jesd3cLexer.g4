@@ -16,14 +16,17 @@ VAL_FUS_ID  : 'QF';
 VAL_PIN_ID  : 'QP';
 VAL_VEC_ID  : 'QV';
 
+DEFAULT_ID  : 'F';
+
 FUSE_LIST_ID: 'L';
 
-fragment
-DIGIT       : [0-9];
-
-fragment
 BINARY_DIGIT
  : [0-1]
+ ;
+
+fragment
+DIGIT       
+ : BINARY_DIGIT | [2-9]
  ;
 
 HEX_DIGIT
