@@ -1,3 +1,10 @@
+/*
+ * JESD3C Parser for ANTLR4
+ *
+ * Copyright (c) 2024 Ross Bamford & Contributors
+ * MIT License (see LICENSE.md)
+ */
+
 grammar Jesd3c;
 
 options {
