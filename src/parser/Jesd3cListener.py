@@ -113,6 +113,14 @@ class Jesd3cListener(ParseTreeListener):
     def exitFuse_list_field(self, ctx: Jesd3cParser.Fuse_list_fieldContext):
         pass
 
+    # Enter a parse tree produced by Jesd3cParser#fuse_checksum_field.
+    def enterFuse_checksum_field(self, ctx: Jesd3cParser.Fuse_checksum_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#fuse_checksum_field.
+    def exitFuse_checksum_field(self, ctx: Jesd3cParser.Fuse_checksum_fieldContext):
+        pass
+
     # Enter a parse tree produced by Jesd3cParser#fuse_number.
     def enterFuse_number(self, ctx: Jesd3cParser.Fuse_numberContext):
         pass

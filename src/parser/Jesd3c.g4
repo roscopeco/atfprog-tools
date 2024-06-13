@@ -29,6 +29,7 @@ field
  | value_field
  | fuse_default_field
  | fuse_list_field
+ | fuse_checksum_field
  ;
 
 note_field
@@ -65,6 +66,10 @@ fuse_list_field
  : FUSE_LIST_ID fuse_number fuse_data TERMINATOR
  ;
 
+fuse_checksum_field
+ : FUSE_CKSUM_ID xmit_cksum TERMINATOR
+ ;
+ 
 fuse_number
  : NUMBER
  | BINARY_NUMBER
