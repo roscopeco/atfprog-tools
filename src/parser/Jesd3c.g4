@@ -17,9 +17,10 @@ spec
  ;
 
 field
- : fuse_list_field
+ : empty_field 
  | note_field
- | empty_field 
+ | value_field
+ | fuse_list_field
  ;
 
 note_field
@@ -28,6 +29,24 @@ note_field
 
 note
  : NOTE NOTE*
+ ;
+
+value_field
+ : value_fuse_limit_field
+ | value_pin_count_field
+ | value_vec_limit_field
+ ;
+
+value_fuse_limit_field
+ : VAL_FUS_ID NUMBER TERMINATOR
+ ;
+
+value_pin_count_field
+ : VAL_PIN_ID NUMBER TERMINATOR
+ ;
+
+value_vec_limit_field
+ : VAL_VEC_ID NUMBER TERMINATOR
  ;
 
 fuse_list_field

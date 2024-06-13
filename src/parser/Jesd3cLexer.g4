@@ -5,6 +5,10 @@ ETX         : '\u0003';
 TERMINATOR  : '*';
 
 NOTE_ID     : 'N' ('OTE')?              -> pushMode(NOTE_MODE);
+VAL_FUS_ID  : 'QF';
+VAL_PIN_ID  : 'QP';
+VAL_VEC_ID  : 'QV';
+
 FUSE_LIST_ID: 'L';
 
 fragment

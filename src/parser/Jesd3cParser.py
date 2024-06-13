@@ -14,8 +14,8 @@ def serializedATN():
     return [
         4,
         1,
-        10,
-        85,
+        13,
+        111,
         2,
         0,
         7,
@@ -60,6 +60,22 @@ def serializedATN():
         10,
         7,
         10,
+        2,
+        11,
+        7,
+        11,
+        2,
+        12,
+        7,
+        12,
+        2,
+        13,
+        7,
+        13,
+        2,
+        14,
+        7,
+        14,
         1,
         0,
         1,
@@ -68,14 +84,14 @@ def serializedATN():
         0,
         5,
         0,
-        26,
+        34,
         8,
         0,
         10,
         0,
         12,
         0,
-        29,
+        37,
         9,
         0,
         1,
@@ -88,7 +104,7 @@ def serializedATN():
         1,
         3,
         1,
-        35,
+        43,
         8,
         1,
         1,
@@ -101,54 +117,56 @@ def serializedATN():
         2,
         5,
         2,
-        41,
-        8,
-        2,
-        10,
-        2,
-        12,
-        2,
-        44,
-        9,
-        2,
-        1,
-        3,
-        1,
-        3,
-        1,
-        3,
-        3,
-        3,
         49,
         8,
-        3,
-        1,
-        4,
-        1,
-        4,
-        3,
-        4,
-        53,
-        8,
-        4,
-        1,
-        4,
-        1,
-        4,
-        1,
-        5,
-        1,
-        5,
-        5,
-        5,
-        59,
-        8,
-        5,
+        2,
         10,
-        5,
+        2,
         12,
-        5,
+        2,
+        52,
+        9,
+        2,
+        1,
+        3,
+        1,
+        3,
+        1,
+        3,
+        1,
+        3,
+        3,
+        3,
+        58,
+        8,
+        3,
+        1,
+        4,
+        1,
+        4,
+        3,
+        4,
         62,
+        8,
+        4,
+        1,
+        4,
+        1,
+        4,
+        1,
+        5,
+        1,
+        5,
+        5,
+        5,
+        68,
+        8,
+        5,
+        10,
+        5,
+        12,
+        5,
+        71,
         9,
         5,
         1,
@@ -157,10 +175,15 @@ def serializedATN():
         6,
         1,
         6,
-        1,
+        3,
+        6,
+        76,
+        8,
         6,
         1,
-        6,
+        7,
+        1,
+        7,
         1,
         7,
         1,
@@ -169,37 +192,67 @@ def serializedATN():
         8,
         1,
         8,
-        5,
+        1,
         8,
-        73,
+        1,
         8,
-        8,
+        1,
+        9,
+        1,
+        9,
+        1,
+        9,
+        1,
+        9,
+        1,
         10,
+        1,
+        10,
+        1,
+        10,
+        1,
+        10,
+        1,
+        10,
+        1,
+        11,
+        1,
+        11,
+        1,
+        12,
+        1,
+        12,
+        5,
+        12,
+        99,
         8,
         12,
-        8,
-        76,
+        10,
+        12,
+        12,
+        12,
+        102,
         9,
-        8,
+        12,
         1,
-        9,
+        13,
         1,
-        9,
+        13,
         1,
-        10,
+        14,
         1,
-        10,
+        14,
         1,
-        10,
+        14,
         1,
-        10,
+        14,
         1,
-        10,
+        14,
         1,
-        10,
+        14,
         0,
         0,
-        11,
+        15,
         0,
         2,
         4,
@@ -211,165 +264,139 @@ def serializedATN():
         16,
         18,
         20,
-        0,
-        1,
-        1,
-        0,
-        7,
-        8,
-        81,
-        0,
         22,
+        24,
+        26,
+        28,
+        0,
+        1,
+        1,
+        0,
+        10,
+        11,
+        106,
+        0,
+        30,
         1,
         0,
         0,
         0,
         2,
-        34,
+        42,
         1,
         0,
         0,
         0,
         4,
-        38,
+        46,
         1,
         0,
         0,
         0,
         6,
-        48,
+        57,
         1,
         0,
         0,
         0,
         8,
-        50,
+        59,
         1,
         0,
         0,
         0,
         10,
-        56,
+        65,
         1,
         0,
         0,
         0,
         12,
-        63,
+        75,
         1,
         0,
         0,
         0,
         14,
-        68,
-        1,
-        0,
-        0,
-        0,
-        16,
-        70,
-        1,
-        0,
-        0,
-        0,
-        18,
         77,
         1,
         0,
         0,
         0,
+        16,
+        81,
+        1,
+        0,
+        0,
+        0,
+        18,
+        85,
+        1,
+        0,
+        0,
+        0,
         20,
-        79,
+        89,
         1,
         0,
         0,
         0,
         22,
-        23,
+        94,
+        1,
+        0,
+        0,
+        0,
+        24,
+        96,
+        1,
+        0,
+        0,
+        0,
+        26,
+        103,
+        1,
+        0,
+        0,
+        0,
+        28,
+        105,
+        1,
+        0,
+        0,
+        0,
+        30,
+        31,
         5,
         1,
         0,
         0,
-        23,
-        27,
+        31,
+        35,
         3,
         2,
         1,
         0,
-        24,
-        26,
+        32,
+        34,
         3,
         6,
         3,
         0,
-        25,
-        24,
-        1,
-        0,
-        0,
-        0,
-        26,
-        29,
-        1,
-        0,
-        0,
-        0,
-        27,
-        25,
-        1,
-        0,
-        0,
-        0,
-        27,
-        28,
-        1,
-        0,
-        0,
-        0,
-        28,
-        30,
-        1,
-        0,
-        0,
-        0,
-        29,
-        27,
-        1,
-        0,
-        0,
-        0,
-        30,
-        31,
-        5,
-        2,
-        0,
-        0,
-        31,
-        32,
-        3,
-        20,
-        10,
-        0,
-        32,
-        1,
-        1,
-        0,
-        0,
-        0,
         33,
-        35,
-        3,
-        4,
-        2,
-        0,
-        34,
-        33,
+        32,
         1,
         0,
         0,
         0,
         34,
+        37,
+        1,
+        0,
+        0,
+        0,
         35,
+        33,
         1,
         0,
         0,
@@ -381,93 +408,81 @@ def serializedATN():
         0,
         0,
         36,
-        37,
-        5,
-        3,
+        38,
+        1,
         0,
         0,
+        0,
         37,
-        3,
+        35,
         1,
         0,
         0,
         0,
         38,
-        42,
+        39,
         5,
-        10,
+        2,
         0,
         0,
         39,
-        41,
-        5,
-        10,
-        0,
+        40,
+        3,
+        28,
+        14,
         0,
         40,
-        39,
+        1,
         1,
         0,
         0,
         0,
         41,
-        44,
-        1,
-        0,
-        0,
-        0,
-        42,
-        40,
-        1,
-        0,
-        0,
-        0,
-        42,
         43,
-        1,
-        0,
-        0,
-        0,
-        43,
-        5,
-        1,
-        0,
-        0,
-        0,
-        44,
-        42,
-        1,
-        0,
-        0,
-        0,
-        45,
-        49,
         3,
-        12,
-        6,
-        0,
-        46,
-        49,
-        3,
-        8,
         4,
+        2,
         0,
-        47,
-        49,
-        3,
-        18,
-        9,
+        42,
+        41,
+        1,
         0,
-        48,
+        0,
+        0,
+        42,
+        43,
+        1,
+        0,
+        0,
+        0,
+        43,
+        44,
+        1,
+        0,
+        0,
+        0,
+        44,
         45,
+        5,
+        3,
+        0,
+        0,
+        45,
+        3,
         1,
         0,
         0,
         0,
-        48,
         46,
-        1,
+        50,
+        5,
+        13,
         0,
+        0,
+        47,
+        49,
+        5,
+        13,
         0,
         0,
         48,
@@ -477,97 +492,115 @@ def serializedATN():
         0,
         0,
         49,
-        7,
+        52,
         1,
         0,
         0,
         0,
         50,
+        48,
+        1,
+        0,
+        0,
+        0,
+        50,
+        51,
+        1,
+        0,
+        0,
+        0,
+        51,
+        5,
+        1,
+        0,
+        0,
+        0,
         52,
+        50,
+        1,
+        0,
+        0,
+        0,
+        53,
+        58,
+        3,
+        26,
+        13,
+        0,
+        54,
+        58,
+        3,
+        8,
+        4,
+        0,
+        55,
+        58,
+        3,
+        12,
+        6,
+        0,
+        56,
+        58,
+        3,
+        20,
+        10,
+        0,
+        57,
+        53,
+        1,
+        0,
+        0,
+        0,
+        57,
+        54,
+        1,
+        0,
+        0,
+        0,
+        57,
+        55,
+        1,
+        0,
+        0,
+        0,
+        57,
+        56,
+        1,
+        0,
+        0,
+        0,
+        58,
+        7,
+        1,
+        0,
+        0,
+        0,
+        59,
+        61,
         5,
         4,
         0,
         0,
-        51,
-        53,
-        3,
-        10,
-        5,
-        0,
-        52,
-        51,
-        1,
-        0,
-        0,
-        0,
-        52,
-        53,
-        1,
-        0,
-        0,
-        0,
-        53,
-        54,
-        1,
-        0,
-        0,
-        0,
-        54,
-        55,
-        5,
-        3,
-        0,
-        0,
-        55,
-        9,
-        1,
-        0,
-        0,
-        0,
-        56,
         60,
-        5,
-        10,
-        0,
-        0,
-        57,
-        59,
-        5,
-        10,
-        0,
-        0,
-        58,
-        57,
-        1,
-        0,
-        0,
-        0,
-        59,
         62,
-        1,
+        3,
+        10,
+        5,
         0,
-        0,
-        0,
-        60,
-        58,
-        1,
-        0,
-        0,
-        0,
-        60,
         61,
+        60,
         1,
         0,
         0,
         0,
         61,
-        11,
+        62,
         1,
         0,
         0,
         0,
         62,
-        60,
+        63,
         1,
         0,
         0,
@@ -575,115 +608,127 @@ def serializedATN():
         63,
         64,
         5,
-        5,
+        3,
         0,
         0,
         64,
+        9,
+        1,
+        0,
+        0,
+        0,
         65,
+        69,
+        5,
+        13,
+        0,
+        0,
+        66,
+        68,
+        5,
+        13,
+        0,
+        0,
+        67,
+        66,
+        1,
+        0,
+        0,
+        0,
+        68,
+        71,
+        1,
+        0,
+        0,
+        0,
+        69,
+        67,
+        1,
+        0,
+        0,
+        0,
+        69,
+        70,
+        1,
+        0,
+        0,
+        0,
+        70,
+        11,
+        1,
+        0,
+        0,
+        0,
+        71,
+        69,
+        1,
+        0,
+        0,
+        0,
+        72,
+        76,
         3,
         14,
         7,
         0,
-        65,
-        66,
+        73,
+        76,
         3,
         16,
         8,
         0,
-        66,
-        67,
-        5,
+        74,
+        76,
         3,
+        18,
+        9,
+        0,
+        75,
+        72,
+        1,
         0,
         0,
-        67,
+        0,
+        75,
+        73,
+        1,
+        0,
+        0,
+        0,
+        75,
+        74,
+        1,
+        0,
+        0,
+        0,
+        76,
         13,
         1,
         0,
         0,
         0,
-        68,
-        69,
-        7,
-        0,
-        0,
-        0,
-        69,
-        15,
-        1,
-        0,
-        0,
-        0,
-        70,
-        74,
-        5,
-        7,
-        0,
-        0,
-        71,
-        73,
-        5,
-        7,
-        0,
-        0,
-        72,
-        71,
-        1,
-        0,
-        0,
-        0,
-        73,
-        76,
-        1,
-        0,
-        0,
-        0,
-        74,
-        72,
-        1,
-        0,
-        0,
-        0,
-        74,
-        75,
-        1,
-        0,
-        0,
-        0,
-        75,
-        17,
-        1,
-        0,
-        0,
-        0,
-        76,
-        74,
-        1,
-        0,
-        0,
-        0,
         77,
         78,
         5,
-        3,
+        5,
         0,
         0,
         78,
-        19,
-        1,
-        0,
+        79,
+        5,
+        11,
         0,
         0,
         79,
         80,
         5,
-        6,
+        3,
         0,
         0,
         80,
-        81,
-        5,
-        6,
+        15,
+        1,
+        0,
         0,
         0,
         81,
@@ -695,23 +740,186 @@ def serializedATN():
         82,
         83,
         5,
-        6,
+        11,
         0,
         0,
         83,
+        84,
+        5,
+        3,
+        0,
+        0,
+        84,
+        17,
+        1,
+        0,
+        0,
+        0,
+        85,
+        86,
+        5,
+        7,
+        0,
+        0,
+        86,
+        87,
+        5,
+        11,
+        0,
+        0,
+        87,
+        88,
+        5,
+        3,
+        0,
+        0,
+        88,
+        19,
+        1,
+        0,
+        0,
+        0,
+        89,
+        90,
+        5,
+        8,
+        0,
+        0,
+        90,
+        91,
+        3,
+        22,
+        11,
+        0,
+        91,
+        92,
+        3,
+        24,
+        12,
+        0,
+        92,
+        93,
+        5,
+        3,
+        0,
+        0,
+        93,
         21,
         1,
         0,
         0,
         0,
+        94,
+        95,
         7,
+        0,
+        0,
+        0,
+        95,
+        23,
+        1,
+        0,
+        0,
+        0,
+        96,
+        100,
+        5,
+        10,
+        0,
+        0,
+        97,
+        99,
+        5,
+        10,
+        0,
+        0,
+        98,
+        97,
+        1,
+        0,
+        0,
+        0,
+        99,
+        102,
+        1,
+        0,
+        0,
+        0,
+        100,
+        98,
+        1,
+        0,
+        0,
+        0,
+        100,
+        101,
+        1,
+        0,
+        0,
+        0,
+        101,
+        25,
+        1,
+        0,
+        0,
+        0,
+        102,
+        100,
+        1,
+        0,
+        0,
+        0,
+        103,
+        104,
+        5,
+        3,
+        0,
+        0,
+        104,
         27,
-        34,
+        1,
+        0,
+        0,
+        0,
+        105,
+        106,
+        5,
+        9,
+        0,
+        0,
+        106,
+        107,
+        5,
+        9,
+        0,
+        0,
+        107,
+        108,
+        5,
+        9,
+        0,
+        0,
+        108,
+        109,
+        5,
+        9,
+        0,
+        0,
+        109,
+        29,
+        1,
+        0,
+        0,
+        0,
+        8,
+        35,
         42,
-        48,
-        52,
-        60,
-        74,
+        50,
+        57,
+        61,
+        69,
+        75,
+        100,
     ]
 
 
@@ -730,6 +938,9 @@ class Jesd3cParser(Parser):
         "'\\u0003'",
         "<INVALID>",
         "<INVALID>",
+        "'QF'",
+        "'QP'",
+        "'QV'",
         "'L'",
     ]
 
@@ -739,6 +950,9 @@ class Jesd3cParser(Parser):
         "ETX",
         "TERMINATOR",
         "NOTE_ID",
+        "VAL_FUS_ID",
+        "VAL_PIN_ID",
+        "VAL_VEC_ID",
         "FUSE_LIST_ID",
         "HEX_DIGIT",
         "BINARY_NUMBER",
@@ -753,11 +967,15 @@ class Jesd3cParser(Parser):
     RULE_field = 3
     RULE_note_field = 4
     RULE_note = 5
-    RULE_fuse_list_field = 6
-    RULE_fuse_number = 7
-    RULE_fuse_data = 8
-    RULE_empty_field = 9
-    RULE_xmit_cksum = 10
+    RULE_value_field = 6
+    RULE_value_fuse_limit_field = 7
+    RULE_value_pin_count_field = 8
+    RULE_value_vec_limit_field = 9
+    RULE_fuse_list_field = 10
+    RULE_fuse_number = 11
+    RULE_fuse_data = 12
+    RULE_empty_field = 13
+    RULE_xmit_cksum = 14
 
     ruleNames = [
         "jes3dc",
@@ -766,6 +984,10 @@ class Jesd3cParser(Parser):
         "field",
         "note_field",
         "note",
+        "value_field",
+        "value_fuse_limit_field",
+        "value_pin_count_field",
+        "value_vec_limit_field",
         "fuse_list_field",
         "fuse_number",
         "fuse_data",
@@ -778,12 +1000,15 @@ class Jesd3cParser(Parser):
     ETX = 2
     TERMINATOR = 3
     NOTE_ID = 4
-    FUSE_LIST_ID = 5
-    HEX_DIGIT = 6
-    BINARY_NUMBER = 7
-    NUMBER = 8
-    SPACE = 9
-    NOTE = 10
+    VAL_FUS_ID = 5
+    VAL_PIN_ID = 6
+    VAL_VEC_ID = 7
+    FUSE_LIST_ID = 8
+    HEX_DIGIT = 9
+    BINARY_NUMBER = 10
+    NUMBER = 11
+    SPACE = 12
+    NOTE = 13
 
     def __init__(self, input: TokenStream, output: TextIO = sys.stdout):
         super().__init__(input, output)
@@ -837,23 +1062,23 @@ class Jesd3cParser(Parser):
         self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 22
+            self.state = 30
             self.match(Jesd3cParser.STX)
-            self.state = 23
+            self.state = 31
             self.spec_field()
-            self.state = 27
+            self.state = 35
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while ((_la) & ~0x3F) == 0 and ((1 << _la) & 56) != 0:
-                self.state = 24
+            while ((_la) & ~0x3F) == 0 and ((1 << _la) & 504) != 0:
+                self.state = 32
                 self.field()
-                self.state = 29
+                self.state = 37
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 30
+            self.state = 38
             self.match(Jesd3cParser.ETX)
-            self.state = 31
+            self.state = 39
             self.xmit_cksum()
         except RecognitionException as re:
             localctx.exception = re
@@ -895,14 +1120,14 @@ class Jesd3cParser(Parser):
         self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 34
+            self.state = 42
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == 10:
-                self.state = 33
+            if _la == 13:
+                self.state = 41
                 self.spec()
 
-            self.state = 36
+            self.state = 44
             self.match(Jesd3cParser.TERMINATOR)
         except RecognitionException as re:
             localctx.exception = re
@@ -944,15 +1169,15 @@ class Jesd3cParser(Parser):
         self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 38
+            self.state = 46
             self.match(Jesd3cParser.NOTE)
-            self.state = 42
+            self.state = 50
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la == 10:
-                self.state = 39
+            while _la == 13:
+                self.state = 47
                 self.match(Jesd3cParser.NOTE)
-                self.state = 44
+                self.state = 52
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -973,14 +1198,17 @@ class Jesd3cParser(Parser):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def fuse_list_field(self):
-            return self.getTypedRuleContext(Jesd3cParser.Fuse_list_fieldContext, 0)
+        def empty_field(self):
+            return self.getTypedRuleContext(Jesd3cParser.Empty_fieldContext, 0)
 
         def note_field(self):
             return self.getTypedRuleContext(Jesd3cParser.Note_fieldContext, 0)
 
-        def empty_field(self):
-            return self.getTypedRuleContext(Jesd3cParser.Empty_fieldContext, 0)
+        def value_field(self):
+            return self.getTypedRuleContext(Jesd3cParser.Value_fieldContext, 0)
+
+        def fuse_list_field(self):
+            return self.getTypedRuleContext(Jesd3cParser.Fuse_list_fieldContext, 0)
 
         def getRuleIndex(self):
             return Jesd3cParser.RULE_field
@@ -997,23 +1225,28 @@ class Jesd3cParser(Parser):
         localctx = Jesd3cParser.FieldContext(self, self._ctx, self.state)
         self.enterRule(localctx, 6, self.RULE_field)
         try:
-            self.state = 48
+            self.state = 57
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [5]:
+            if token in [3]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 45
-                self.fuse_list_field()
+                self.state = 53
+                self.empty_field()
                 pass
             elif token in [4]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 46
+                self.state = 54
                 self.note_field()
                 pass
-            elif token in [3]:
+            elif token in [5, 6, 7]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 47
-                self.empty_field()
+                self.state = 55
+                self.value_field()
+                pass
+            elif token in [8]:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 56
+                self.fuse_list_field()
                 pass
             else:
                 raise NoViableAltException(self)
@@ -1061,16 +1294,16 @@ class Jesd3cParser(Parser):
         self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 50
+            self.state = 59
             self.match(Jesd3cParser.NOTE_ID)
-            self.state = 52
+            self.state = 61
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la == 10:
-                self.state = 51
+            if _la == 13:
+                self.state = 60
                 self.note()
 
-            self.state = 54
+            self.state = 63
             self.match(Jesd3cParser.TERMINATOR)
         except RecognitionException as re:
             localctx.exception = re
@@ -1112,18 +1345,236 @@ class Jesd3cParser(Parser):
         self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 56
+            self.state = 65
             self.match(Jesd3cParser.NOTE)
-            self.state = 60
+            self.state = 69
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la == 10:
-                self.state = 57
+            while _la == 13:
+                self.state = 66
                 self.match(Jesd3cParser.NOTE)
-                self.state = 62
+                self.state = 71
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Value_fieldContext(ParserRuleContext):
+        __slots__ = "parser"
+
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def value_fuse_limit_field(self):
+            return self.getTypedRuleContext(
+                Jesd3cParser.Value_fuse_limit_fieldContext, 0
+            )
+
+        def value_pin_count_field(self):
+            return self.getTypedRuleContext(
+                Jesd3cParser.Value_pin_count_fieldContext, 0
+            )
+
+        def value_vec_limit_field(self):
+            return self.getTypedRuleContext(
+                Jesd3cParser.Value_vec_limit_fieldContext, 0
+            )
+
+        def getRuleIndex(self):
+            return Jesd3cParser.RULE_value_field
+
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterValue_field"):
+                listener.enterValue_field(self)
+
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitValue_field"):
+                listener.exitValue_field(self)
+
+    def value_field(self):
+        localctx = Jesd3cParser.Value_fieldContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_value_field)
+        try:
+            self.state = 75
+            self._errHandler.sync(self)
+            token = self._input.LA(1)
+            if token in [5]:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 72
+                self.value_fuse_limit_field()
+                pass
+            elif token in [6]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 73
+                self.value_pin_count_field()
+                pass
+            elif token in [7]:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 74
+                self.value_vec_limit_field()
+                pass
+            else:
+                raise NoViableAltException(self)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Value_fuse_limit_fieldContext(ParserRuleContext):
+        __slots__ = "parser"
+
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def VAL_FUS_ID(self):
+            return self.getToken(Jesd3cParser.VAL_FUS_ID, 0)
+
+        def NUMBER(self):
+            return self.getToken(Jesd3cParser.NUMBER, 0)
+
+        def TERMINATOR(self):
+            return self.getToken(Jesd3cParser.TERMINATOR, 0)
+
+        def getRuleIndex(self):
+            return Jesd3cParser.RULE_value_fuse_limit_field
+
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterValue_fuse_limit_field"):
+                listener.enterValue_fuse_limit_field(self)
+
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitValue_fuse_limit_field"):
+                listener.exitValue_fuse_limit_field(self)
+
+    def value_fuse_limit_field(self):
+        localctx = Jesd3cParser.Value_fuse_limit_fieldContext(
+            self, self._ctx, self.state
+        )
+        self.enterRule(localctx, 14, self.RULE_value_fuse_limit_field)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 77
+            self.match(Jesd3cParser.VAL_FUS_ID)
+            self.state = 78
+            self.match(Jesd3cParser.NUMBER)
+            self.state = 79
+            self.match(Jesd3cParser.TERMINATOR)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Value_pin_count_fieldContext(ParserRuleContext):
+        __slots__ = "parser"
+
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def VAL_PIN_ID(self):
+            return self.getToken(Jesd3cParser.VAL_PIN_ID, 0)
+
+        def NUMBER(self):
+            return self.getToken(Jesd3cParser.NUMBER, 0)
+
+        def TERMINATOR(self):
+            return self.getToken(Jesd3cParser.TERMINATOR, 0)
+
+        def getRuleIndex(self):
+            return Jesd3cParser.RULE_value_pin_count_field
+
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterValue_pin_count_field"):
+                listener.enterValue_pin_count_field(self)
+
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitValue_pin_count_field"):
+                listener.exitValue_pin_count_field(self)
+
+    def value_pin_count_field(self):
+        localctx = Jesd3cParser.Value_pin_count_fieldContext(
+            self, self._ctx, self.state
+        )
+        self.enterRule(localctx, 16, self.RULE_value_pin_count_field)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 81
+            self.match(Jesd3cParser.VAL_PIN_ID)
+            self.state = 82
+            self.match(Jesd3cParser.NUMBER)
+            self.state = 83
+            self.match(Jesd3cParser.TERMINATOR)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Value_vec_limit_fieldContext(ParserRuleContext):
+        __slots__ = "parser"
+
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def VAL_VEC_ID(self):
+            return self.getToken(Jesd3cParser.VAL_VEC_ID, 0)
+
+        def NUMBER(self):
+            return self.getToken(Jesd3cParser.NUMBER, 0)
+
+        def TERMINATOR(self):
+            return self.getToken(Jesd3cParser.TERMINATOR, 0)
+
+        def getRuleIndex(self):
+            return Jesd3cParser.RULE_value_vec_limit_field
+
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterValue_vec_limit_field"):
+                listener.enterValue_vec_limit_field(self)
+
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitValue_vec_limit_field"):
+                listener.exitValue_vec_limit_field(self)
+
+    def value_vec_limit_field(self):
+        localctx = Jesd3cParser.Value_vec_limit_fieldContext(
+            self, self._ctx, self.state
+        )
+        self.enterRule(localctx, 18, self.RULE_value_vec_limit_field)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 85
+            self.match(Jesd3cParser.VAL_VEC_ID)
+            self.state = 86
+            self.match(Jesd3cParser.NUMBER)
+            self.state = 87
+            self.match(Jesd3cParser.TERMINATOR)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1166,16 +1617,16 @@ class Jesd3cParser(Parser):
 
     def fuse_list_field(self):
         localctx = Jesd3cParser.Fuse_list_fieldContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_fuse_list_field)
+        self.enterRule(localctx, 20, self.RULE_fuse_list_field)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 63
+            self.state = 89
             self.match(Jesd3cParser.FUSE_LIST_ID)
-            self.state = 64
+            self.state = 90
             self.fuse_number()
-            self.state = 65
+            self.state = 91
             self.fuse_data()
-            self.state = 66
+            self.state = 92
             self.match(Jesd3cParser.TERMINATOR)
         except RecognitionException as re:
             localctx.exception = re
@@ -1213,13 +1664,13 @@ class Jesd3cParser(Parser):
 
     def fuse_number(self):
         localctx = Jesd3cParser.Fuse_numberContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_fuse_number)
+        self.enterRule(localctx, 22, self.RULE_fuse_number)
         self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 68
+            self.state = 94
             _la = self._input.LA(1)
-            if not (_la == 7 or _la == 8):
+            if not (_la == 10 or _la == 11):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -1260,19 +1711,19 @@ class Jesd3cParser(Parser):
 
     def fuse_data(self):
         localctx = Jesd3cParser.Fuse_dataContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_fuse_data)
+        self.enterRule(localctx, 24, self.RULE_fuse_data)
         self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 70
+            self.state = 96
             self.match(Jesd3cParser.BINARY_NUMBER)
-            self.state = 74
+            self.state = 100
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la == 7:
-                self.state = 71
+            while _la == 10:
+                self.state = 97
                 self.match(Jesd3cParser.BINARY_NUMBER)
-                self.state = 76
+                self.state = 102
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1309,10 +1760,10 @@ class Jesd3cParser(Parser):
 
     def empty_field(self):
         localctx = Jesd3cParser.Empty_fieldContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 18, self.RULE_empty_field)
+        self.enterRule(localctx, 26, self.RULE_empty_field)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 77
+            self.state = 103
             self.match(Jesd3cParser.TERMINATOR)
         except RecognitionException as re:
             localctx.exception = re
@@ -1350,16 +1801,16 @@ class Jesd3cParser(Parser):
 
     def xmit_cksum(self):
         localctx = Jesd3cParser.Xmit_cksumContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 20, self.RULE_xmit_cksum)
+        self.enterRule(localctx, 28, self.RULE_xmit_cksum)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 79
+            self.state = 105
             self.match(Jesd3cParser.HEX_DIGIT)
-            self.state = 80
+            self.state = 106
             self.match(Jesd3cParser.HEX_DIGIT)
-            self.state = 81
+            self.state = 107
             self.match(Jesd3cParser.HEX_DIGIT)
-            self.state = 82
+            self.state = 108
             self.match(Jesd3cParser.HEX_DIGIT)
         except RecognitionException as re:
             localctx.exception = re
