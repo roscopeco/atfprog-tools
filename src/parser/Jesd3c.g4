@@ -39,7 +39,7 @@ note_field
  ;
 
 note
- : NOTE NOTE*
+ : NOTE
  ;
 
 value_field
@@ -115,7 +115,7 @@ user_data_field_hex
  ;
 
 user_data_field_asc
- : USER_HEX_ID data=user_data_asc TERMINATOR
+ : USER_ASC_ID data=user_data_asc TERMINATOR
  ;
 
 user_data_bin

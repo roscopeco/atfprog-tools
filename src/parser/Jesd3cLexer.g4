@@ -69,13 +69,13 @@ VALUE_SPACE
 /* Note mode, just grabs text until terminator */
 mode NOTE_MODE;
 
-/* This could be ~'*' but the below makes it easier to see 
-   where in the spec it comes from... */
+/* 
+ * Not _exactly_ to spec - only printable characters other than '*'
+ * are defined there, but this represents what we actually want 
+ * (including whitespace etc)...
+ */
 fragment
-FIELD_CHARACTER
- : '\u0020'..'\u0029'
- | '\u002b'..'\u007e'
- ;
+FIELD_CHARACTER : ~'*';
 
-NOTE        : FIELD_CHARACTER+;
-NOTE_TERM   : '*'                       -> popMode, type(TERMINATOR);
+NOTE            : FIELD_CHARACTER+;
+NOTE_TERM       : '*'                       -> popMode, type(TERMINATOR);

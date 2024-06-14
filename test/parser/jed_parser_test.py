@@ -43,7 +43,7 @@ def test_parse_empty_jed_multiline_spec():
     result.spec_field().spec().should_not.be.none
 
     result.spec_field().spec().getText().should.be.equal_to(
-        "Version 4.45.1        JEDEC file for: ATF1504 PLCC44        Created on: Wed Jun 12 14:18:48 2024        "
+        "Version 4.45.1\n        JEDEC file for: ATF1504 PLCC44\n        Created on: Wed Jun 12 14:18:48 2024\n\n        "
     )
 
     result.field().should.be.empty

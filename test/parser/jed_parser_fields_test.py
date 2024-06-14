@@ -31,7 +31,7 @@ def test_parse_note_field_basic_not_empty():
 def test_parse_note_field_basic_not_empty_multiline():
     _, result = _test_note_field("N some note\n some more note *")
 
-    result.note().getText().should.be.equal_to(" some note some more note ")
+    result.note().getText().should.be.equal_to(" some note\n some more note ")
 
 
 def test_parse_note_field_long_id_empty():
@@ -269,6 +269,27 @@ def test_parse_user_data_field_hex_2_split():
 
     result.user_data_hex().should_not.be.none
     result.user_data_hex().getText().should.be.equal_to("1033FC")
+
+
+def test_parse_user_data_field_asc_simple_nospace():
+    _, result = _test_user_data_field_asc("UAsimple*")
+
+    result.user_data_asc().should_not.be.none
+    result.user_data_asc().getText().should.be.equal_to("simple")
+
+
+def test_parse_user_data_field_asc_simple_space():
+    _, result = _test_user_data_field_asc("UA simple *")
+
+    result.user_data_asc().should_not.be.none
+    result.user_data_asc().getText().should.be.equal_to(" simple ")
+
+
+def test_parse_user_data_field_asc_split():
+    _, result = _test_user_data_field_asc("UA\n simple two\n   three *")
+
+    result.user_data_asc().should_not.be.none
+    result.user_data_asc().getText().should.be.equal_to("\n simple two\n   three ")
 
 
 def _test_empty_field(s: str):
