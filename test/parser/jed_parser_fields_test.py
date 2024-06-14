@@ -86,8 +86,8 @@ def test_parse_fuse_default_field_1():
 def test_parse_fuse_field_simple():
     _, result = _test_fuse_list_field("L0000 01010101*")
 
-    result.fuse_number().NUMBER().should.be.none
-    result.fuse_number().BINARY_NUMBER().should_not.be.none
+    result.fuse_number().decimal().NUMBER().should.be.none
+    result.fuse_number().decimal().BINARY_NUMBER().should_not.be.none
 
     result.fuse_number().getText().should.be.equal_to("0000")
     result.fuse_data().getText().should.be.equal_to("01010101")
@@ -96,8 +96,8 @@ def test_parse_fuse_field_simple():
 def test_parse_fuse_field_multiline_spaces():
     _, result = _test_fuse_list_field("L0001 01010101\n    11111111\n00000000\n*")
 
-    result.fuse_number().NUMBER().should.be.none
-    result.fuse_number().BINARY_NUMBER().should_not.be.none
+    result.fuse_number().decimal().NUMBER().should.be.none
+    result.fuse_number().decimal().BINARY_NUMBER().should_not.be.none
 
     result.fuse_number().getText().should.be.equal_to("0001")
     result.fuse_data().getText().should.be.equal_to("010101011111111100000000")
@@ -292,6 +292,66 @@ def test_parse_user_data_field_asc_split():
     result.user_data_asc().getText().should.be.equal_to("\n simple two\n   three ")
 
 
+def test_parse_device_id_field_both_1_0():
+    _, result = _test_device_id_field("J 0 0*")
+
+    result.arch_code().should_not.be.none
+    result.arch_code().getText().should.be.equal_to("0")
+
+    result.pinout_code().should_not.be.none
+    result.pinout_code().getText().should.be.equal_to("0")
+
+
+def test_parse_device_id_field_both_1_1():
+    _, result = _test_device_id_field("J 1 1*")
+
+    result.arch_code().should_not.be.none
+    result.arch_code().getText().should.be.equal_to("1")
+
+    result.pinout_code().should_not.be.none
+    result.pinout_code().getText().should.be.equal_to("1")
+
+
+def test_parse_device_id_field_both_1_2():
+    _, result = _test_device_id_field("J 2 2*")
+
+    result.arch_code().should_not.be.none
+    result.arch_code().getText().should.be.equal_to("2")
+
+    result.pinout_code().should_not.be.none
+    result.pinout_code().getText().should.be.equal_to("2")
+
+
+def test_parse_device_id_field_1_2():
+    _, result = _test_device_id_field("J 1 23*")
+
+    result.arch_code().should_not.be.none
+    result.arch_code().getText().should.be.equal_to("1")
+
+    result.pinout_code().should_not.be.none
+    result.pinout_code().getText().should.be.equal_to("23")
+
+
+def test_parse_device_id_field_2_2():
+    _, result = _test_device_id_field("J 12 34*")
+
+    result.arch_code().should_not.be.none
+    result.arch_code().getText().should.be.equal_to("12")
+
+    result.pinout_code().should_not.be.none
+    result.pinout_code().getText().should.be.equal_to("34")
+
+
+def test_parse_device_id_field_2_2_split():
+    _, result = _test_device_id_field("J\n 12\n 34\n*")
+
+    result.arch_code().should_not.be.none
+    result.arch_code().getText().should.be.equal_to("12")
+
+    result.pinout_code().should_not.be.none
+    result.pinout_code().getText().should.be.equal_to("34")
+
+
 def _test_empty_field(s: str):
     parser = _string_parser(s)
 
@@ -306,6 +366,7 @@ def _test_empty_field(s: str):
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.empty_field()
 
@@ -324,6 +385,7 @@ def _test_note_field(s: str):
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.note_field()
 
@@ -342,6 +404,7 @@ def _test_value_field(s: str):
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.value_field()
 
@@ -390,6 +453,7 @@ def _test_fuse_default_field(s: str):
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.fuse_default_field()
 
@@ -408,6 +472,7 @@ def _test_fuse_list_field(s: str):
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.fuse_list_field()
 
@@ -426,6 +491,7 @@ def _test_fuse_checksum_field(s: str):
     result.fuse_checksum_field().should_not.be.none
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.fuse_checksum_field()
 
@@ -444,6 +510,7 @@ def _test_electrical_data_field(s: str):
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should_not.be.none
     result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.electrical_data_field()
 
@@ -480,6 +547,7 @@ def _test_user_data_field(s: str):
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
     result.user_data_field().should_not.be.none
+    result.device_id_field().should.be.none
 
     return parser, result.user_data_field()
 
@@ -512,6 +580,25 @@ def _test_user_data_field_asc(s: str):
     result.user_data_field_asc().should_not.be.none
 
     return parser, result.user_data_field_asc()
+
+
+def _test_device_id_field(s: str):
+    parser = _string_parser(s)
+
+    result = parser.field()
+
+    # Common tests
+    result.empty_field().should.be.none
+    result.note_field().should.be.none
+    result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
+    result.fuse_list_field().should.be.none
+    result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
+    result.device_id_field().should_not.be.none
+
+    return parser, result.device_id_field()
 
 
 def _string_lexer(s: str):

@@ -32,6 +32,7 @@ field
  | fuse_checksum_field
  | electrical_data_field
  | user_data_field
+ | device_id_field
  ;
 
 note_field
@@ -69,10 +70,15 @@ fuse_list_field
  ;
 
 fuse_number
- : NUMBER
- | BINARY_NUMBER
+ : decimal
  ;
 
+decimal
+ : NUMBER
+ | BINARY_NUMBER        /* yes, this is counter-intuitive, but here because */
+ | BINARY_DIGIT         /* of numbers like 1001...                          */
+ ; 
+ 
 fuse_data
  : BINARY_NUMBER BINARY_NUMBER*
  | BINARY_DIGIT
@@ -130,6 +136,18 @@ user_data_hex
 
 user_data_asc
  : NOTE
+ ;
+
+device_id_field
+ : DEVICE_ID arch_code pinout_code TERMINATOR
+ ;
+
+arch_code
+ : decimal
+ ;
+
+pinout_code
+ : decimal
  ;
 
 empty_field

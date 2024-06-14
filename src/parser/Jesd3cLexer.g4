@@ -29,6 +29,8 @@ USER_ASC_ID     : 'UA'                      -> pushMode(NOTE_MODE);
 USER_HEX_ID     : 'UH'                      -> pushMode(VALUE_MODE);
 USER_BIN_ID     : 'U'                       -> pushMode(VALUE_MODE);
 
+DEVICE_ID       : 'J'                       -> pushMode(VALUE_MODE);
+
 HEX_DIGIT
  : DIGIT | [A-F]
  ;

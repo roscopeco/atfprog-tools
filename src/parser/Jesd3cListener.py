@@ -121,6 +121,14 @@ class Jesd3cListener(ParseTreeListener):
     def exitFuse_number(self, ctx: Jesd3cParser.Fuse_numberContext):
         pass
 
+    # Enter a parse tree produced by Jesd3cParser#decimal.
+    def enterDecimal(self, ctx: Jesd3cParser.DecimalContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#decimal.
+    def exitDecimal(self, ctx: Jesd3cParser.DecimalContext):
+        pass
+
     # Enter a parse tree produced by Jesd3cParser#fuse_data.
     def enterFuse_data(self, ctx: Jesd3cParser.Fuse_dataContext):
         pass
@@ -233,6 +241,30 @@ class Jesd3cListener(ParseTreeListener):
 
     # Exit a parse tree produced by Jesd3cParser#user_data_asc.
     def exitUser_data_asc(self, ctx: Jesd3cParser.User_data_ascContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#device_id_field.
+    def enterDevice_id_field(self, ctx: Jesd3cParser.Device_id_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#device_id_field.
+    def exitDevice_id_field(self, ctx: Jesd3cParser.Device_id_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#arch_code.
+    def enterArch_code(self, ctx: Jesd3cParser.Arch_codeContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#arch_code.
+    def exitArch_code(self, ctx: Jesd3cParser.Arch_codeContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#pinout_code.
+    def enterPinout_code(self, ctx: Jesd3cParser.Pinout_codeContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#pinout_code.
+    def exitPinout_code(self, ctx: Jesd3cParser.Pinout_codeContext):
         pass
 
     # Enter a parse tree produced by Jesd3cParser#empty_field.
