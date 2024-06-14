@@ -179,6 +179,62 @@ class Jesd3cListener(ParseTreeListener):
     def exitHex_fuse_data(self, ctx: Jesd3cParser.Hex_fuse_dataContext):
         pass
 
+    # Enter a parse tree produced by Jesd3cParser#user_data_field.
+    def enterUser_data_field(self, ctx: Jesd3cParser.User_data_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#user_data_field.
+    def exitUser_data_field(self, ctx: Jesd3cParser.User_data_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#user_data_field_bin.
+    def enterUser_data_field_bin(self, ctx: Jesd3cParser.User_data_field_binContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#user_data_field_bin.
+    def exitUser_data_field_bin(self, ctx: Jesd3cParser.User_data_field_binContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#user_data_field_hex.
+    def enterUser_data_field_hex(self, ctx: Jesd3cParser.User_data_field_hexContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#user_data_field_hex.
+    def exitUser_data_field_hex(self, ctx: Jesd3cParser.User_data_field_hexContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#user_data_field_asc.
+    def enterUser_data_field_asc(self, ctx: Jesd3cParser.User_data_field_ascContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#user_data_field_asc.
+    def exitUser_data_field_asc(self, ctx: Jesd3cParser.User_data_field_ascContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#user_data_bin.
+    def enterUser_data_bin(self, ctx: Jesd3cParser.User_data_binContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#user_data_bin.
+    def exitUser_data_bin(self, ctx: Jesd3cParser.User_data_binContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#user_data_hex.
+    def enterUser_data_hex(self, ctx: Jesd3cParser.User_data_hexContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#user_data_hex.
+    def exitUser_data_hex(self, ctx: Jesd3cParser.User_data_hexContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#user_data_asc.
+    def enterUser_data_asc(self, ctx: Jesd3cParser.User_data_ascContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#user_data_asc.
+    def exitUser_data_asc(self, ctx: Jesd3cParser.User_data_ascContext):
+        pass
+
     # Enter a parse tree produced by Jesd3cParser#empty_field.
     def enterEmpty_field(self, ctx: Jesd3cParser.Empty_fieldContext):
         pass

@@ -31,6 +31,7 @@ field
  | fuse_list_field
  | fuse_checksum_field
  | electrical_data_field
+ | user_data_field
  ;
 
 note_field
@@ -48,19 +49,19 @@ value_field
  ;
 
 value_fuse_limit_field
- : VAL_FUS_ID NUMBER TERMINATOR
+ : VAL_FUS_ID limit=NUMBER TERMINATOR
  ;
 
 value_pin_count_field
- : VAL_PIN_ID NUMBER TERMINATOR
+ : VAL_PIN_ID count=NUMBER TERMINATOR
  ;
 
 value_vec_limit_field
- : VAL_VEC_ID NUMBER TERMINATOR
+ : VAL_VEC_ID limit=NUMBER TERMINATOR
  ;
 
 fuse_default_field
- : DEFAULT_ID BINARY_DIGIT TERMINATOR
+ : DEFAULT_ID value=BINARY_DIGIT TERMINATOR
  ;
 
 fuse_list_field
@@ -87,16 +88,48 @@ electrical_data_field
  ;
 
 electrical_data_field_bin
- : ELEC_BIN_ID fuse_data TERMINATOR
+ : ELEC_BIN_ID data=fuse_data TERMINATOR
  ;
 
 electrical_data_field_hex
- : ELEC_HEX_ID hex_fuse_data TERMINATOR
+ : ELEC_HEX_ID data=hex_fuse_data TERMINATOR
  ;
 
 hex_fuse_data
  : (HEX_NUMBER | NUMBER | BINARY_NUMBER) (HEX_NUMBER | NUMBER | BINARY_NUMBER)*
- | HEX_DIGIT
+ | (HEX_DIGIT | BINARY_DIGIT)
+ ;
+
+user_data_field
+ : user_data_field_bin
+ | user_data_field_hex
+ | user_data_field_asc
+ ;
+
+user_data_field_bin
+ : USER_BIN_ID data=user_data_bin TERMINATOR
+ ;
+
+user_data_field_hex
+ : USER_HEX_ID data=user_data_hex TERMINATOR
+ ;
+
+user_data_field_asc
+ : USER_HEX_ID data=user_data_asc TERMINATOR
+ ;
+
+user_data_bin
+ : BINARY_NUMBER BINARY_NUMBER*
+ | BINARY_DIGIT
+ ;
+
+user_data_hex
+ : (HEX_NUMBER | NUMBER | BINARY_NUMBER) (HEX_NUMBER | NUMBER | BINARY_NUMBER)*
+ | (HEX_DIGIT | BINARY_DIGIT)
+ ;
+
+user_data_asc
+ : NOTE
  ;
 
 empty_field

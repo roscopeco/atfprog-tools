@@ -152,6 +152,13 @@ def test_parse_electrical_data_field_hex_1():
     result.hex_fuse_data().getText().should.be.equal_to("1")
 
 
+def test_parse_electrical_data_field_hex_2():
+    _, result = _test_electrical_data_field_hex("EH2*")
+
+    result.hex_fuse_data().should_not.be.none
+    result.hex_fuse_data().getText().should.be.equal_to("2")
+
+
 def test_parse_electrical_data_field_hex_f():
     _, result = _test_electrical_data_field_hex("EHF*")
 
@@ -180,6 +187,90 @@ def test_parse_electrical_data_field_bin_4_split_newline():
     result.hex_fuse_data().getText().should.be.equal_to("1234")
 
 
+def test_parse_user_data_field_bin_1_0():
+    _, result = _test_user_data_field_bin("U0*")
+
+    result.user_data_bin().should_not.be.none
+    result.user_data_bin().getText().should.be.equal_to("0")
+
+
+def test_parse_user_data_field_bin_1_1():
+    _, result = _test_user_data_field_bin("U1*")
+
+    result.user_data_bin().should_not.be.none
+    result.user_data_bin().getText().should.be.equal_to("1")
+
+
+def test_parse_user_data_field_bin_2():
+    _, result = _test_user_data_field_bin("U10*")
+
+    result.user_data_bin().should_not.be.none
+    result.user_data_bin().getText().should.be.equal_to("10")
+
+
+def test_parse_user_data_field_bin_4_split():
+    _, result = _test_user_data_field_bin("U10\n01*")
+
+    result.user_data_bin().should_not.be.none
+    result.user_data_bin().getText().should.be.equal_to("1001")
+
+
+def test_parse_user_data_field_hex_1_0():
+    _, result = _test_user_data_field_hex("UH0*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("0")
+
+
+def test_parse_user_data_field_hex_1_1():
+    _, result = _test_user_data_field_hex("UH1*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("1")
+
+
+def test_parse_user_data_field_hex_1_2():
+    _, result = _test_user_data_field_hex("UH2*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("2")
+
+
+def test_parse_user_data_field_hex_1_f():
+    _, result = _test_user_data_field_hex("UHF*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("F")
+
+
+def test_parse_user_data_field_hex_2_0():
+    _, result = _test_user_data_field_hex("UH00*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("00")
+
+
+def test_parse_user_data_field_hex_2_dec():
+    _, result = _test_user_data_field_hex("UH12*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("12")
+
+
+def test_parse_user_data_field_hex_2_hex():
+    _, result = _test_user_data_field_hex("UHCA*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("CA")
+
+
+def test_parse_user_data_field_hex_2_split():
+    _, result = _test_user_data_field_hex("UH10\n33\nFC*")
+
+    result.user_data_hex().should_not.be.none
+    result.user_data_hex().getText().should.be.equal_to("1033FC")
+
+
 def _test_empty_field(s: str):
     parser = _string_parser(s)
 
@@ -193,6 +284,7 @@ def _test_empty_field(s: str):
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
 
     return parser, result.empty_field()
 
@@ -210,6 +302,7 @@ def _test_note_field(s: str):
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
 
     return parser, result.note_field()
 
@@ -227,6 +320,7 @@ def _test_value_field(s: str):
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
 
     return parser, result.value_field()
 
@@ -274,6 +368,7 @@ def _test_fuse_default_field(s: str):
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
 
     return parser, result.fuse_default_field()
 
@@ -291,6 +386,7 @@ def _test_fuse_list_field(s: str):
     result.fuse_list_field().should_not.be.none
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
 
     return parser, result.fuse_list_field()
 
@@ -308,6 +404,7 @@ def _test_fuse_checksum_field(s: str):
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should_not.be.none
     result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
 
     return parser, result.fuse_checksum_field()
 
@@ -325,6 +422,7 @@ def _test_electrical_data_field(s: str):
     result.fuse_list_field().should.be.none
     result.fuse_checksum_field().should.be.none
     result.electrical_data_field().should_not.be.none
+    result.user_data_field().should.be.none
 
     return parser, result.electrical_data_field()
 
@@ -345,6 +443,54 @@ def _test_electrical_data_field_hex(s: str):
     result.electrical_data_field_hex().should_not.be.none
 
     return parser, result.electrical_data_field_hex()
+
+
+def _test_user_data_field(s: str):
+    parser = _string_parser(s)
+
+    result = parser.field()
+
+    # Common tests
+    result.empty_field().should.be.none
+    result.note_field().should.be.none
+    result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
+    result.fuse_list_field().should.be.none
+    result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
+    result.user_data_field().should_not.be.none
+
+    return parser, result.user_data_field()
+
+
+def _test_user_data_field_bin(s: str):
+    parser, result = _test_user_data_field(s)
+
+    result.user_data_field_bin().should_not.be.none
+    result.user_data_field_hex().should.be.none
+    result.user_data_field_asc().should.be.none
+
+    return parser, result.user_data_field_bin()
+
+
+def _test_user_data_field_hex(s: str):
+    parser, result = _test_user_data_field(s)
+
+    result.user_data_field_bin().should.be.none
+    result.user_data_field_hex().should_not.be.none
+    result.user_data_field_asc().should.be.none
+
+    return parser, result.user_data_field_hex()
+
+
+def _test_user_data_field_asc(s: str):
+    parser, result = _test_user_data_field(s)
+
+    result.user_data_field_bin().should.be.none
+    result.user_data_field_hex().should.be.none
+    result.user_data_field_asc().should_not.be.none
+
+    return parser, result.user_data_field_asc()
 
 
 def _string_lexer(s: str):

@@ -25,6 +25,10 @@ FUSE_CKSUM_ID   : 'C'                       -> pushMode(VALUE_MODE);
 ELEC_HEX_ID     : 'EH'                      -> pushMode(VALUE_MODE);
 ELEC_BIN_ID     : 'E'                       -> pushMode(VALUE_MODE);
 
+USER_ASC_ID     : 'UA'                      -> pushMode(NOTE_MODE);
+USER_HEX_ID     : 'UH'                      -> pushMode(VALUE_MODE);
+USER_BIN_ID     : 'U'                       -> pushMode(VALUE_MODE);
+
 HEX_DIGIT
  : DIGIT | [A-F]
  ;
@@ -57,6 +61,10 @@ HEX_NUMBER
  ;
 
 VALUE_TERM   : '*'                      -> popMode, type(TERMINATOR);
+
+VALUE_SPACE
+ : [ \t\r\n]                            -> channel(HIDDEN), type(SPACE)
+ ;
 
 /* Note mode, just grabs text until terminator */
 mode NOTE_MODE;
