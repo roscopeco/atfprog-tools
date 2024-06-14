@@ -5,3 +5,4 @@
 pcinst.zip
 src/little_atf_programmer.egg-info
 dist
+src/parser/.antlr
