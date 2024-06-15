@@ -1,4 +1,4 @@
-# Generated from src/parser/Jesd3c.g4 by ANTLR 4.13.1
+# Generated from src/parser/Jesd3cParser.g4 by ANTLR 4.13.1
 from antlr4 import *
 
 if "." in __name__:
@@ -8,7 +8,7 @@ else:
 
 
 # This class defines a complete listener for a parse tree produced by Jesd3cParser.
-class Jesd3cListener(ParseTreeListener):
+class Jesd3cParserListener(ParseTreeListener):
     # Enter a parse tree produced by Jesd3cParser#jesd3c.
     def enterJesd3c(self, ctx: Jesd3cParser.Jesd3cContext):
         pass
@@ -265,6 +265,50 @@ class Jesd3cListener(ParseTreeListener):
 
     # Exit a parse tree produced by Jesd3cParser#pinout_code.
     def exitPinout_code(self, ctx: Jesd3cParser.Pinout_codeContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#default_test_cond_field.
+    def enterDefault_test_cond_field(
+        self, ctx: Jesd3cParser.Default_test_cond_fieldContext
+    ):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#default_test_cond_field.
+    def exitDefault_test_cond_field(
+        self, ctx: Jesd3cParser.Default_test_cond_fieldContext
+    ):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#default_test_cond.
+    def enterDefault_test_cond(self, ctx: Jesd3cParser.Default_test_condContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#default_test_cond.
+    def exitDefault_test_cond(self, ctx: Jesd3cParser.Default_test_condContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#test_vector_field.
+    def enterTest_vector_field(self, ctx: Jesd3cParser.Test_vector_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#test_vector_field.
+    def exitTest_vector_field(self, ctx: Jesd3cParser.Test_vector_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#vector_number.
+    def enterVector_number(self, ctx: Jesd3cParser.Vector_numberContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#vector_number.
+    def exitVector_number(self, ctx: Jesd3cParser.Vector_numberContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#test_cond.
+    def enterTest_cond(self, ctx: Jesd3cParser.Test_condContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#test_cond.
+    def exitTest_cond(self, ctx: Jesd3cParser.Test_condContext):
         pass
 
     # Enter a parse tree produced by Jesd3cParser#empty_field.

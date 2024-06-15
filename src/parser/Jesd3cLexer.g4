@@ -31,6 +31,9 @@ USER_BIN_ID     : 'U'                       -> pushMode(VALUE_MODE);
 
 DEVICE_ID       : 'J'                       -> pushMode(VALUE_MODE);
 
+DEF_TEST_COND_ID: 'X'                       -> pushMode(VALUE_MODE);
+TEST_VEC_ID     : 'V'                       -> pushMode(TEST_VEC_MODE);
+
 HEX_DIGIT
  : DIGIT | [A-F]
  ;
@@ -46,7 +49,7 @@ BINARY_DIGIT
  ;
 
 fragment
-DIGIT       
+DIGIT
  : BINARY_DIGIT | [2-9]
  ;
 
@@ -65,6 +68,25 @@ HEX_NUMBER
 VALUE_TERM   : '*'                      -> popMode, type(TERMINATOR);
 
 VALUE_SPACE
+ : [ \t\r\n]                            -> channel(HIDDEN), type(SPACE)
+ ;
+
+mode TEST_VEC_MODE;
+
+fragment
+TEST_DIGIT
+ : [0-9]
+ ;
+
+TEST_VEC_NUMBER
+ : TEST_DIGIT TEST_DIGIT*
+ ;
+
+TEST_COND   : (TEST_DIGIT | 'B' | 'C' | 'D' | 'F' | 'H' | 'K' | 'L' | 'N' | 'P' | 'R' | 'T' | 'U' | 'X' | 'Z')+;
+
+TEST_TERM   : '*'                      -> popMode, type(TERMINATOR);
+
+TEST_SPACE
  : [ \t\r\n]                            -> channel(HIDDEN), type(SPACE)
  ;
 

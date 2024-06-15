@@ -5,7 +5,7 @@
  * MIT License (see LICENSE.md)
  */
 
-grammar Jesd3c;
+parser grammar Jesd3cParser;
 
 options {
     tokenVocab = Jesd3cLexer; 
@@ -33,6 +33,8 @@ field
  | electrical_data_field
  | user_data_field
  | device_id_field
+ | default_test_cond_field
+ | test_vector_field
  ;
 
 note_field
@@ -75,8 +77,9 @@ fuse_number
 
 decimal
  : NUMBER
+ | TEST_VEC_NUMBER
  | BINARY_NUMBER        /* yes, this is counter-intuitive, but here because */
- | BINARY_DIGIT         /* of numbers like 1001...                          */
+ | BINARY_DIGIT         /* of numbers like 1001...  */
  ; 
  
 fuse_data
@@ -148,6 +151,26 @@ arch_code
 
 pinout_code
  : decimal
+ ;
+
+default_test_cond_field
+ : DEF_TEST_COND_ID default_test_cond TERMINATOR
+ ;
+
+default_test_cond
+ : BINARY_DIGIT
+ ;
+
+test_vector_field
+ : TEST_VEC_ID vector_number test_cond? TERMINATOR
+ ;
+
+vector_number
+ : decimal
+ ;
+
+test_cond
+ : (TEST_COND | TEST_VEC_NUMBER) (TEST_COND | TEST_VEC_NUMBER)*
  ;
 
 empty_field

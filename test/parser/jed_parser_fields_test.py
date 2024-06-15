@@ -352,6 +352,85 @@ def test_parse_device_id_field_2_2_split():
     result.pinout_code().getText().should.be.equal_to("34")
 
 
+def test_default_test_cond_field_0():
+    _, result = _test_default_test_cond_field("X0*")
+
+    result.default_test_cond().should_not.be.none
+    result.default_test_cond().getText().should.be.equal_to("0")
+
+
+def test_default_test_cond_field_1():
+    _, result = _test_default_test_cond_field("X1*")
+
+    result.default_test_cond().should_not.be.none
+    result.default_test_cond().getText().should.be.equal_to("1")
+
+
+def test_default_test_cond_field_0_split():
+    _, result = _test_default_test_cond_field("X\n0*")
+
+    result.default_test_cond().should_not.be.none
+    result.default_test_cond().getText().should.be.equal_to("0")
+
+
+def test_default_test_cond_field_1_split():
+    _, result = _test_default_test_cond_field("X\n1*")
+
+    result.default_test_cond().should_not.be.none
+    result.default_test_cond().getText().should.be.equal_to("1")
+
+
+def test_test_vector_field_empty():
+    _, result = _test_test_vector_field("V0001*")
+
+    result.vector_number().getText().should.be.equal_to("0001")
+    result.test_cond().should.be.none
+
+
+def test_test_vector_field_zero():
+    _, result = _test_test_vector_field("V0001 0*")
+
+    result.test_cond().should_not.be.none
+    result.vector_number().getText().should.be.equal_to("0001")
+    result.test_cond().getText().should.be.equal_to("0")
+
+
+def test_test_vector_field_all():
+    _, result = _test_test_vector_field(
+        "V0001 0123456789BCDFHKLNPRTUXZ0123456789BCDFHKLNPRTUXZ0123456789BCDFHKLNPRTUXZ*"
+    )
+
+    result.test_cond().should_not.be.none
+    result.vector_number().getText().should.be.equal_to("0001")
+    result.test_cond().getText().should.be.equal_to(
+        "0123456789BCDFHKLNPRTUXZ0123456789BCDFHKLNPRTUXZ0123456789BCDFHKLNPRTUXZ"
+    )
+
+
+def test_test_vector_field_one_digit_number():
+    _, result = _test_test_vector_field("V1 0*")
+
+    result.test_cond().should_not.be.none
+    result.vector_number().getText().should.be.equal_to("1")
+    result.test_cond().getText().should.be.equal_to("0")
+
+
+def test_test_vector_field_two_digit_number():
+    _, result = _test_test_vector_field("V42 0*")
+
+    result.test_cond().should_not.be.none
+    result.vector_number().getText().should.be.equal_to("42")
+    result.test_cond().getText().should.be.equal_to("0")
+
+
+def test_test_vector_field_ten_digit_number():
+    _, result = _test_test_vector_field("V1234567890 0*")
+
+    result.test_cond().should_not.be.none
+    result.vector_number().getText().should.be.equal_to("1234567890")
+    result.test_cond().getText().should.be.equal_to("0")
+
+
 def _test_empty_field(s: str):
     parser = _string_parser(s)
 
@@ -367,6 +446,8 @@ def _test_empty_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.empty_field()
 
@@ -386,6 +467,8 @@ def _test_note_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.note_field()
 
@@ -405,6 +488,8 @@ def _test_value_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.value_field()
 
@@ -454,6 +539,8 @@ def _test_fuse_default_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.fuse_default_field()
 
@@ -473,6 +560,8 @@ def _test_fuse_list_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.fuse_list_field()
 
@@ -492,6 +581,8 @@ def _test_fuse_checksum_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.fuse_checksum_field()
 
@@ -511,6 +602,8 @@ def _test_electrical_data_field(s: str):
     result.electrical_data_field().should_not.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.electrical_data_field()
 
@@ -548,6 +641,8 @@ def _test_user_data_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should_not.be.none
     result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.user_data_field()
 
@@ -597,8 +692,52 @@ def _test_device_id_field(s: str):
     result.electrical_data_field().should.be.none
     result.user_data_field().should.be.none
     result.device_id_field().should_not.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
 
     return parser, result.device_id_field()
+
+
+def _test_default_test_cond_field(s: str):
+    parser = _string_parser(s)
+
+    result = parser.field()
+
+    # Common tests
+    result.empty_field().should.be.none
+    result.note_field().should.be.none
+    result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
+    result.fuse_list_field().should.be.none
+    result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
+    result.default_test_cond_field().should_not.be.none
+    result.test_vector_field().should.be.none
+
+    return parser, result.default_test_cond_field()
+
+
+def _test_test_vector_field(s: str):
+    parser = _string_parser(s)
+
+    result = parser.field()
+
+    # Common tests
+    result.empty_field().should.be.none
+    result.note_field().should.be.none
+    result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
+    result.fuse_list_field().should.be.none
+    result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should_not.be.none
+
+    return parser, result.test_vector_field()
 
 
 def _string_lexer(s: str):
