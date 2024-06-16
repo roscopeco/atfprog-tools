@@ -5,6 +5,12 @@ import sure
 from parser.Jesd3cParser import Jesd3cParser
 from parser.Jesd3cLexer import Jesd3cLexer
 
+import test.atfu.test_cases
+
+from importlib.resources import files
+
+from antlr4.error.ErrorStrategy import BailErrorStrategy
+
 
 def test_parse_empty_jed():
     parser = _string_parser(
@@ -72,9 +78,58 @@ def test_parse_jed_with_checksum():
     result.xmit_cksum().getText().should.be.equal_to("1234")
 
 
+def test_bug3():
+    jed = load_testcase("bug3.jed")
+    parser = _string_parser(jed)
+
+    result = parser.jesd3c()
+
+    result.spec_field().should_not.be.none
+    result.spec_field().spec().should_not.be.none
+
+    result.spec_field().spec().getText().should.be.equal_to(
+        "JEDEC file for: ATF1508AS\nCreated on: Mon May 20 15:20:33 2024\n"
+    )
+
+    result.field().should_not.be.empty
+    # TODO assert against the fields!
+
+    result.xmit_cksum().should_not.be.none
+    result.xmit_cksum().getText().should.be.equal_to("7A3A")
+
+
+def test_bug4():
+    jed = load_testcase("bug3.jed")
+    parser = _string_parser(jed)
+
+    result = parser.jesd3c()
+
+    result.spec_field().should_not.be.none
+    result.spec_field().spec().should_not.be.none
+
+    result.spec_field().spec().getText().should.be.equal_to(
+        "JEDEC file for: ATF1508AS\nCreated on: Mon May 20 15:20:33 2024\n"
+    )
+
+    result.field().should_not.be.empty
+    # TODO assert against the fields!
+
+    result.xmit_cksum().should_not.be.none
+    result.xmit_cksum().getText().should.be.equal_to("7A3A")
+
+
+def load_testcase(name: str) -> str:
+    with open(files("test.atfu.test_cases.jed").joinpath(name)) as f:
+        return f.read()
+
+
 def _string_lexer(s: str):
-    return Jesd3cLexer(antlr4.InputStream(s))
+    lexer = Jesd3cLexer(antlr4.InputStream(s))
+    lexer._errHandler = BailErrorStrategy()
+    return lexer
 
 
 def _string_parser(s: str):
-    return Jesd3cParser(antlr4.CommonTokenStream(_string_lexer(s)))
+    parser = Jesd3cParser(antlr4.CommonTokenStream(_string_lexer(s)))
+    parser._errHandler = BailErrorStrategy()
+    return parser

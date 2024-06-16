@@ -34,6 +34,8 @@ DEVICE_ID       : 'J'                       -> pushMode(VALUE_MODE);
 DEF_TEST_COND_ID: 'X'                       -> pushMode(VALUE_MODE);
 TEST_VEC_ID     : 'V'                       -> pushMode(TEST_VEC_MODE);
 
+PIN_LIST_ID     : 'P'                       -> pushMode(VALUE_MODE);
+
 HEX_DIGIT
  : DIGIT | [A-F]
  ;
@@ -84,7 +86,15 @@ TEST_VEC_NUMBER
 
 TEST_COND   : (TEST_DIGIT | 'B' | 'C' | 'D' | 'F' | 'H' | 'K' | 'L' | 'N' | 'P' | 'R' | 'T' | 'U' | 'X' | 'Z')+;
 
-TEST_TERM   : '*'                      -> popMode, type(TERMINATOR);
+/* 
+ * These are weird, and not strictly to spec - but CSIM will sometimes embed values 
+ * inside test vectors for some reason.... 🤷
+ */
+WEIRD_VAL_FUS_ID      : 'QF'              -> pushMode(VALUE_MODE), type(VAL_FUS_ID);
+WEIRD_VAL_PIN_ID      : 'QP'              -> pushMode(VALUE_MODE), type(VAL_PIN_ID);
+WEIRD_VAL_VEC_ID      : 'QV'              -> pushMode(VALUE_MODE), type(VAL_VEC_ID);
+
+TEST_TERM   : '*'                       -> popMode, type(TERMINATOR);
 
 TEST_SPACE
  : [ \t\r\n]                            -> channel(HIDDEN), type(SPACE)

@@ -55,19 +55,19 @@ def test_parse_note_field_long_id_not_empty():
 def test_parse_value_fuse_limit_field():
     _, result = _test_value_fuse_limit_field("QF1024*")
 
-    result.NUMBER().getText().should.be.equal_to("1024")
+    result.fuse_limit().getText().should.be.equal_to("1024")
 
 
 def test_parse_value_pin_count_field():
     _, result = _test_value_pin_count_field("QP44*")
 
-    result.NUMBER().getText().should.be.equal_to("44")
+    result.pin_count().getText().should.be.equal_to("44")
 
 
 def test_parse_value_vec_limit_field():
     _, result = _test_value_vec_limit_field("QV9001*")
 
-    result.NUMBER().getText().should.be.equal_to("9001")
+    result.vec_limit().getText().should.be.equal_to("9001")
 
 
 def test_parse_fuse_default_field_0():
@@ -106,15 +106,15 @@ def test_parse_fuse_field_multiline_spaces():
 def test_parse_fuse_checksum_field_zeroes():
     _, result = _test_fuse_checksum_field("C0000n*")
 
-    result.xmit_cksum().should_not.be.none
-    result.xmit_cksum().getText().should.be.equal_to("0000")
+    result.fuse_cksum().should_not.be.none
+    result.fuse_cksum().getText().should.be.equal_to("0000")
 
 
 def test_parse_fuse_checksum_field_ffff():
     _, result = _test_fuse_checksum_field("CFFFFn*")
 
-    result.xmit_cksum().should_not.be.none
-    result.xmit_cksum().getText().should.be.equal_to("FFFF")
+    result.fuse_cksum().should_not.be.none
+    result.fuse_cksum().getText().should.be.equal_to("FFFF")
 
 
 def test_parse_electrical_data_field_bin_1():
@@ -431,6 +431,77 @@ def test_test_vector_field_ten_digit_number():
     result.test_cond().getText().should.be.equal_to("0")
 
 
+def test_pin_list_field_empty():
+    _, result = _test_pin_list_field("P*")
+
+    result.pin_list().should.be.none
+
+
+def test_pin_list_field_empty_space():
+    _, result = _test_pin_list_field("P *")
+
+    result.pin_list().should.be.none
+
+
+def test_pin_list_field_one_single_pin():
+    _, result = _test_pin_list_field("P 1*")
+
+    result.pin_list().should_not.be.none
+    result.pin_list().pin_number().should_not.be.none
+    [pin.getText() for pin in result.pin_list().pin_number()].should.equal(["1"])
+
+
+def test_pin_list_field_one_single_pin_space():
+    _, result = _test_pin_list_field("P 1 *")
+
+    result.pin_list().should_not.be.none
+    result.pin_list().pin_number().should_not.be.none
+    [pin.getText() for pin in result.pin_list().pin_number()].should.equal(["1"])
+
+
+def test_pin_list_field_one_double_pin():
+    _, result = _test_pin_list_field("P 12*")
+
+    result.pin_list().should_not.be.none
+    result.pin_list().pin_number().should_not.be.none
+    [pin.getText() for pin in result.pin_list().pin_number()].should.equal(["12"])
+
+
+def test_pin_list_field_one_double_pin_space():
+    _, result = _test_pin_list_field("P 12 *")
+
+    result.pin_list().should_not.be.none
+    result.pin_list().pin_number().should_not.be.none
+    [pin.getText() for pin in result.pin_list().pin_number()].should.equal(["12"])
+
+
+def test_pin_list_field_multiple_pin():
+    _, result = _test_pin_list_field(
+        "P 12 3 13 44 99999999 220202 101010101 1111111 0000 0 00 1 0 42 *"
+    )
+
+    result.pin_list().should_not.be.none
+    result.pin_list().pin_number().should_not.be.none
+    [pin.getText() for pin in result.pin_list().pin_number()].should.equal(
+        [
+            "12",
+            "3",
+            "13",
+            "44",
+            "99999999",
+            "220202",
+            "101010101",
+            "1111111",
+            "0000",
+            "0",
+            "00",
+            "1",
+            "0",
+            "42",
+        ]
+    )
+
+
 def _test_empty_field(s: str):
     parser = _string_parser(s)
 
@@ -448,6 +519,7 @@ def _test_empty_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.empty_field()
 
@@ -469,6 +541,7 @@ def _test_note_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.note_field()
 
@@ -490,6 +563,7 @@ def _test_value_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.value_field()
 
@@ -541,6 +615,7 @@ def _test_fuse_default_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.fuse_default_field()
 
@@ -562,6 +637,7 @@ def _test_fuse_list_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.fuse_list_field()
 
@@ -583,6 +659,7 @@ def _test_fuse_checksum_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.fuse_checksum_field()
 
@@ -604,6 +681,7 @@ def _test_electrical_data_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.electrical_data_field()
 
@@ -643,6 +721,7 @@ def _test_user_data_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.user_data_field()
 
@@ -694,6 +773,7 @@ def _test_device_id_field(s: str):
     result.device_id_field().should_not.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.device_id_field()
 
@@ -715,6 +795,7 @@ def _test_default_test_cond_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should_not.be.none
     result.test_vector_field().should.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.default_test_cond_field()
 
@@ -736,8 +817,31 @@ def _test_test_vector_field(s: str):
     result.device_id_field().should.be.none
     result.default_test_cond_field().should.be.none
     result.test_vector_field().should_not.be.none
+    result.pin_list_field().should.be.none
 
     return parser, result.test_vector_field()
+
+
+def _test_pin_list_field(s: str):
+    parser = _string_parser(s)
+
+    result = parser.field()
+
+    # Common tests
+    result.empty_field().should.be.none
+    result.note_field().should.be.none
+    result.value_field().should.be.none
+    result.fuse_default_field().should.be.none
+    result.fuse_list_field().should.be.none
+    result.fuse_checksum_field().should.be.none
+    result.electrical_data_field().should.be.none
+    result.user_data_field().should.be.none
+    result.device_id_field().should.be.none
+    result.default_test_cond_field().should.be.none
+    result.test_vector_field().should.be.none
+    result.pin_list_field().should_not.be.none
+
+    return parser, result.pin_list_field()
 
 
 def _string_lexer(s: str):

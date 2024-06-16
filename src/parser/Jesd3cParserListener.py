@@ -77,6 +77,14 @@ class Jesd3cParserListener(ParseTreeListener):
     ):
         pass
 
+    # Enter a parse tree produced by Jesd3cParser#fuse_limit.
+    def enterFuse_limit(self, ctx: Jesd3cParser.Fuse_limitContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#fuse_limit.
+    def exitFuse_limit(self, ctx: Jesd3cParser.Fuse_limitContext):
+        pass
+
     # Enter a parse tree produced by Jesd3cParser#value_pin_count_field.
     def enterValue_pin_count_field(
         self, ctx: Jesd3cParser.Value_pin_count_fieldContext
@@ -87,6 +95,14 @@ class Jesd3cParserListener(ParseTreeListener):
     def exitValue_pin_count_field(self, ctx: Jesd3cParser.Value_pin_count_fieldContext):
         pass
 
+    # Enter a parse tree produced by Jesd3cParser#pin_count.
+    def enterPin_count(self, ctx: Jesd3cParser.Pin_countContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#pin_count.
+    def exitPin_count(self, ctx: Jesd3cParser.Pin_countContext):
+        pass
+
     # Enter a parse tree produced by Jesd3cParser#value_vec_limit_field.
     def enterValue_vec_limit_field(
         self, ctx: Jesd3cParser.Value_vec_limit_fieldContext
@@ -95,6 +111,14 @@ class Jesd3cParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by Jesd3cParser#value_vec_limit_field.
     def exitValue_vec_limit_field(self, ctx: Jesd3cParser.Value_vec_limit_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#vec_limit.
+    def enterVec_limit(self, ctx: Jesd3cParser.Vec_limitContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#vec_limit.
+    def exitVec_limit(self, ctx: Jesd3cParser.Vec_limitContext):
         pass
 
     # Enter a parse tree produced by Jesd3cParser#fuse_default_field.
@@ -143,6 +167,14 @@ class Jesd3cParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by Jesd3cParser#fuse_checksum_field.
     def exitFuse_checksum_field(self, ctx: Jesd3cParser.Fuse_checksum_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#fuse_cksum.
+    def enterFuse_cksum(self, ctx: Jesd3cParser.Fuse_cksumContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#fuse_cksum.
+    def exitFuse_cksum(self, ctx: Jesd3cParser.Fuse_cksumContext):
         pass
 
     # Enter a parse tree produced by Jesd3cParser#electrical_data_field.
@@ -309,6 +341,30 @@ class Jesd3cParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by Jesd3cParser#test_cond.
     def exitTest_cond(self, ctx: Jesd3cParser.Test_condContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#pin_list_field.
+    def enterPin_list_field(self, ctx: Jesd3cParser.Pin_list_fieldContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#pin_list_field.
+    def exitPin_list_field(self, ctx: Jesd3cParser.Pin_list_fieldContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#pin_list.
+    def enterPin_list(self, ctx: Jesd3cParser.Pin_listContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#pin_list.
+    def exitPin_list(self, ctx: Jesd3cParser.Pin_listContext):
+        pass
+
+    # Enter a parse tree produced by Jesd3cParser#pin_number.
+    def enterPin_number(self, ctx: Jesd3cParser.Pin_numberContext):
+        pass
+
+    # Exit a parse tree produced by Jesd3cParser#pin_number.
+    def exitPin_number(self, ctx: Jesd3cParser.Pin_numberContext):
         pass
 
     # Enter a parse tree produced by Jesd3cParser#empty_field.

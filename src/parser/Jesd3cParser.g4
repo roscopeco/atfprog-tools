@@ -35,6 +35,7 @@ field
  | device_id_field
  | default_test_cond_field
  | test_vector_field
+ | pin_list_field
  ;
 
 note_field
@@ -52,15 +53,30 @@ value_field
  ;
 
 value_fuse_limit_field
- : VAL_FUS_ID limit=NUMBER TERMINATOR
+ : VAL_FUS_ID fuse_limit TERMINATOR
+ ;
+ 
+fuse_limit
+ : NUMBER
+ | BINARY_NUMBER
  ;
 
 value_pin_count_field
- : VAL_PIN_ID count=NUMBER TERMINATOR
+ : VAL_PIN_ID pin_count TERMINATOR
  ;
 
+pin_count
+ : NUMBER
+ | BINARY_NUMBER
+ ;
+ 
 value_vec_limit_field
- : VAL_VEC_ID limit=NUMBER TERMINATOR
+ : VAL_VEC_ID vec_limit TERMINATOR
+ ;
+
+vec_limit
+ : NUMBER
+ | BINARY_NUMBER
  ;
 
 fuse_default_field
@@ -88,9 +104,13 @@ fuse_data
  ;
 
 fuse_checksum_field
- : FUSE_CKSUM_ID xmit_cksum TERMINATOR
+ : FUSE_CKSUM_ID fuse_cksum TERMINATOR
  ;
 
+fuse_cksum
+ : HEX_NUMBER
+ ;
+ 
 electrical_data_field
  : electrical_data_field_bin
  | electrical_data_field_hex
@@ -161,8 +181,9 @@ default_test_cond
  : BINARY_DIGIT
  ;
 
+/* The embedded value field here is not to spec AFAICT, but observed in the wild... */
 test_vector_field
- : TEST_VEC_ID vector_number test_cond? TERMINATOR
+ : TEST_VEC_ID vector_number (value_field)* test_cond? TERMINATOR
  ;
 
 vector_number
@@ -171,6 +192,18 @@ vector_number
 
 test_cond
  : (TEST_COND | TEST_VEC_NUMBER) (TEST_COND | TEST_VEC_NUMBER)*
+ ;
+
+pin_list_field
+ : PIN_LIST_ID pin_list? TERMINATOR
+ ;
+
+pin_list
+ : pin_number+
+ ;
+
+pin_number
+ : decimal
  ;
 
 empty_field
