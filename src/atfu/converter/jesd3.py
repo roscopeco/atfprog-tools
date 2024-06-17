@@ -105,9 +105,21 @@ class JESD3Lexer:
 
         elif self._state == "fields":
             match = self._ident_re.match(self.buffer, self.position)
+
+            # Another horrible hack - we can't handle empty fields, so just try to skip them...
+            # Will be replaced by new parser, so there's that to look forward to at least...
+            #
+            if not match and self.buffer[self.position] == "*":
+                while self.buffer[self.position] in "*\n ":
+                    self.position += 1
+                match = self._ident_re.match(self.buffer, self.position)
+            #
+            #
+
             if match:
                 token = match.group(0)
                 match = self._field_res[token].match(self.buffer, self.position)
+
                 if not match:
                     if token == "V":
                         global_output().error(
