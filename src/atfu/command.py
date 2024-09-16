@@ -7,7 +7,7 @@ import atfu.programmer
 
 BOARDNAME = "Little ATF150x Programmer Board"
 PROGNAME = f"{BOARDNAME} Utility"
-VERSION = "2024.1014"
+VERSION = "2024.1015"
 
 
 def main():
