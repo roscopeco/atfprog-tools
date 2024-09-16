@@ -51,8 +51,18 @@ def _arg_parser():
     program.add_argument(
         "-d",
         "--device",
-        default="ATF1502",
-        choices=("ATF1502", "ATF1504", "ATF1508"),
+        default="ATF1502AS",
+        choices=(
+            "ATF1502",
+            "ATF1504",
+            "ATF1508",
+            "ATF1502AS",
+            "ATF1504AS",
+            "ATF1508AS",
+            "ATF1502ASV",
+            "ATF1504ASV",
+            "ATF1508ASV",
+        ),
         help="Device to program (default: %(default)s)",
     )
     program.add_argument(
@@ -81,8 +91,18 @@ def _arg_parser():
     erase.add_argument(
         "-d",
         "--device",
-        default="ATF1502",
-        choices=("ATF1502", "ATF1504", "ATF1508"),
+        default="ATF1502AS",
+        choices=(
+            "ATF1502",
+            "ATF1504",
+            "ATF1508",
+            "ATF1502AS",
+            "ATF1504AS",
+            "ATF1508AS",
+            "ATF1502ASV",
+            "ATF1504ASV",
+            "ATF1508ASV",
+        ),
         help="Device to erase (default: %(default)s)",
     )
     erase.set_defaults(func=atfu.erase.handler)
@@ -98,8 +118,18 @@ def _arg_parser():
     check.add_argument(
         "-d",
         "--device",
-        default="ATF1502",
-        choices=("ATF1502", "ATF1504", "ATF1508"),
+        default="ATF1502AS",
+        choices=(
+            "ATF1502",
+            "ATF1504",
+            "ATF1508",
+            "ATF1502AS",
+            "ATF1504AS",
+            "ATF1508AS",
+            "ATF1502ASV",
+            "ATF1504ASV",
+            "ATF1508ASV",
+        ),
         help="Device to check (default: %(default)s)",
     )
     check.set_defaults(func=atfu.check.handler)
