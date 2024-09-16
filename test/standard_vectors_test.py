@@ -8,7 +8,6 @@ from atfu.standard_vectors import (
     ATF_1504,
     ATF_1508,
     find_vector_file,
-    atf_device_key,
 )
 
 
@@ -70,27 +69,3 @@ def test_find_vector_file_erase_1504():
 def test_find_vector_file_erase_1508():
     result = find_vector_file(OP_ERASE, ATF_1508)
     str(result).should.match(r"src[\\/]atfu[\\/]standard_vectors[\\/]e1508.xsvf$")
-
-
-def test_atf_device_key_zero():
-    atf_device_key.when.called_with(0).should.have.raised(ValueError)
-
-
-def test_atf_device_key_string():
-    atf_device_key.when.called_with("").should.have.raised(ValueError)
-
-
-def test_atf_device_key_1500():
-    atf_device_key.when.called_with(1500).should.have.raised(ValueError)
-
-
-def test_atf_device_key_1502():
-    atf_device_key.when.called_with(1502).should.return_value(ATF_1502)
-
-
-def test_atf_device_key_1504():
-    atf_device_key.when.called_with(1504).should.return_value(ATF_1504)
-
-
-def test_atf_device_key_1508():
-    atf_device_key.when.called_with(1508).should.return_value(ATF_1508)

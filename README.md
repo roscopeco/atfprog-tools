@@ -9,7 +9,7 @@ for the Little ATF150x Programmer Board.
 ![Picture of The Little ATF150x Programmer](https://github.com/roscopeco/atfprog-tools/raw/main/images/board.jpeg)
 
 This is a plug-and-play USB-connected programmer and breakout board for
-Atmel (Microchip) ATF150{2,4,8} CPLDs, featuring:
+Atmel (Microchip) ATF150{2,4,8}{AS,ASV} CPLDs, featuring:
 
 * Support for JED, SVF or XSVF files
 * Support for both PLCC44 and 84 packages on-board
@@ -109,8 +109,8 @@ options:
   -h, --help            show this help message and exit
   -e, --erase           Erase before programming
   -f, --force           Force-erase before programming (implies -e)
-  -d {ATF1502,ATF1504,ATF1508}, --device {ATF1502,ATF1504,ATF1508}
-                        Device to program (default: ATF1502)
+  -d {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
+                        Device to program (default: ATF1502AS)
   -p PROGRAMMER, --programmer PROGRAMMER
                         Programmer device (default: /dev/cu.usbmodem14301)
 ```
@@ -130,8 +130,8 @@ options:
   -f, --force           Force erase
   -p PROGRAMMER, --programmer PROGRAMMER
                         Programmer device (default: /dev/cu.usbmodem14301)
-  -d {ATF1502,ATF1504,ATF1508}, --device {ATF1502,ATF1504,ATF1508}
-                        Device to erase (default: ATF1502)
+  -d {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
+                        Device to erase (default: ATF1502AS)
 ```
 
 #### Check mode
@@ -150,8 +150,8 @@ options:
   -h, --help            show this help message and exit
   -p PROGRAMMER, --programmer PROGRAMMER
                         Programmer device (default: /dev/cu.usbmodem14301)
-  -d {ATF1502,ATF1504,ATF1508}, --device {ATF1502,ATF1504,ATF1508}
-                        Device to check (default: ATF1502)
+  -d {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
+                        Device to check (default: ATF1502AS)
 ```
 
 #### Programmer mode

@@ -2,7 +2,14 @@ import io
 import tempfile
 from atfu.output import Output
 from atfu.converter.fuseconv import read_jed, write_svf
-from atfu.converter.device import ATF1502ASDevice, ATF1504ASDevice, ATF1508ASDevice
+from atfu.converter.device import (
+    ATF1502ASDevice,
+    ATF1504ASDevice,
+    ATF1508ASDevice,
+    ATF1502ASVDevice,
+    ATF1504ASVDevice,
+    ATF1508ASVDevice,
+)
 
 # TODO don't be exit()ing in here.......
 
@@ -17,12 +24,18 @@ def jed2svf(
     infile.close()
     infile = open(inname, "r")
 
-    if device == "ATF1502":
+    if device == "ATF1502AS" or device == "ATF1502":
         c_device = ATF1502ASDevice
-    elif device == "ATF1504":
+    elif device == "ATF1504AS" or device == "ATF1504":
         c_device = ATF1504ASDevice
-    elif device == "ATF1508":
+    elif device == "ATF1508AS" or device == "ATF1508":
         c_device = ATF1508ASDevice
+    elif device == "ATF1502ASV":
+        c_device = ATF1502ASVDevice
+    elif device == "ATF1504ASV":
+        c_device = ATF1504ASVDevice
+    elif device == "ATF1508ASV":
+        c_device = ATF1508ASVDevice
     else:
         output.error(
             "Bug",
