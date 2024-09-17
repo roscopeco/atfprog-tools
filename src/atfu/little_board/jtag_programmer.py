@@ -83,7 +83,7 @@ class JtagProgrammer(object):
 
         if self._start_time > 0 and self._verbosity > 0:
             if success:
-                if not self._no_success:
+                if not self._no_success and self._verbosity > 1:
                     print(
                         f"{cbGreen}Success{cReset} in %.02f seconds."
                         % (time.time() - self._start_time)

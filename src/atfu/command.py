@@ -3,6 +3,7 @@ import argparse
 import atfu.program
 import atfu.erase
 import atfu.check
+import atfu.verify
 import atfu.programmer
 
 BOARDNAME = "Little ATF150x Programmer Board"
@@ -47,6 +48,12 @@ def _arg_parser():
         "--force",
         action="store_true",
         help="Force-erase before programming (implies -e)",
+    )
+    program.add_argument(
+        "-n",
+        "--noverify",
+        action="store_true",
+        help="Skip verification after programming",
     )
     program.add_argument(
         "-d",
@@ -133,6 +140,39 @@ def _arg_parser():
         help="Device to check (default: %(default)s)",
     )
     check.set_defaults(func=atfu.check.handler)
+
+    # Verify
+    verify = subs.add_parser("verify", help="Verify an ATF150x device")
+    verify.add_argument(
+        "-d",
+        "--device",
+        default="ATF1502AS",
+        choices=(
+            "ATF1502",
+            "ATF1504",
+            "ATF1508",
+            "ATF1502AS",
+            "ATF1504AS",
+            "ATF1508AS",
+            "ATF1502ASV",
+            "ATF1504ASV",
+            "ATF1508ASV",
+        ),
+        help="Device to verify (default: %(default)s)",
+    )
+    verify.add_argument(
+        "-p",
+        "--programmer",
+        default=atfu.programmer.default_programmer_path(),
+        help="Programmer device (default: %(default)s)",
+    )
+    verify.add_argument(
+        "filename",
+        nargs="+",
+        type=argparse.FileType("rb"),
+        help=".jed, .svf or .xsvf file(s) to verify against",
+    )
+    verify.set_defaults(func=atfu.verify.handler)
 
     # Programmer
     programmer = subs.add_parser("programmer", help=f"{BOARDNAME} device functions")

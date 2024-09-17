@@ -75,7 +75,9 @@ class ATFSVFEventHandler(SVFEventHandler):
     #         self.bits[self.addr] = self.data
 
 
-def write_svf(file, svf_bits, device, *, comment):
+def write_svf(
+    file, svf_bits, device, *, comment, erase=False, program=True, verify=True
+):
     # This code is kind of awful.
     def emit_header():
         for comment_line in comment.splitlines():
@@ -169,11 +171,18 @@ def write_svf(file, svf_bits, device, *, comment):
     emit_header()
     emit_check_idcode(device.idcode)
     emit_enable()
-    emit_erase()
-    for svf_row in svf_bits:
-        emit_program(svf_row, svf_bits[svf_row])
-    for svf_row in svf_bits:
-        emit_verify(svf_row, svf_bits[svf_row])
+
+    if erase:
+        emit_erase()
+
+    if program:
+        for svf_row in svf_bits:
+            emit_program(svf_row, svf_bits[svf_row])
+
+    if verify:
+        for svf_row in svf_bits:
+            emit_verify(svf_row, svf_bits[svf_row])
+
     emit_disable()
 
 

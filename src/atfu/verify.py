@@ -1,46 +1,26 @@
 import io
 import re
 import os.path
-import atfu.erase
-import atfu.verify
-from atfu.output import Output, cbYellow, cReset
+from atfu.output import Output
 from atfu.little_board.jtag_programmer import JtagProgrammer
 from atfu.converter.jed2svf import jed2svf
 from atfu.converter.svf2xsvf import svf2xsvf
 
 
 def handler(args):
+    exit(perform_verify(args))
+
+
+def perform_verify(args):
     output = Output(args)
 
-    if args.erase or args.force:
-        erase_result = atfu.erase.perform_erase(args, no_success=False)
-        if erase_result != 0:
-            exit(erase_result)
-
-    will_verify = not args.noverify and True not in (
-        bool(re.search(r"[Xx]?[Ss][Vv][Ff]$", fn.name)) for fn in args.filename
-    )
-    prog = JtagProgrammer(
-        "PROGRAM", args.programmer, output.verbosity(), no_success=False
-    )
+    prog = JtagProgrammer("VERIFY", args.programmer, output.verbosity())
 
     xsvf_files = _process_input_files(args.device, args.filename, output)
-
     if prog.upload_all_files(xsvf_files):
-        if not args.noverify:
-            if not will_verify:
-                output.output(
-                    1,
-                    f"{cbYellow}Warning{cReset} Verification specified, but skipped due to SVF/XSVF input file",
-                )
-            else:
-                verify_result = atfu.verify.perform_verify(args)
-                if verify_result != 0:
-                    exit(verify_result)
-
-        exit(0)
+        return 0
     else:
-        exit(1)
+        return 1
 
 
 def _process_input_files(
@@ -51,12 +31,19 @@ def _process_input_files(
 
 def _process_input_file(device: str, file: io.BufferedReader, output: Output):
     if re.search(r"[Jj][Ee][Dd]$", file.name):
-        # Never erase or verify here, we do those separately for better error reporting...
         return _process_input_svf(output, _process_input_jed(output, device, file))
     elif re.search(r"[^Xx][Ss][Vv][Ff]$", file.name):
-        return _process_input_svf(output, file)
+        output.error(
+            "Failure",
+            f"Separate verification only for JESD3-C (.jed), {os.path.basename(file.name)} is SVF; Cannot continue",
+        )
+        exit(89)
     elif re.search(r"[Xx][Ss][Vv][Ff]$", file.name):
-        return file
+        output.error(
+            "Failure",
+            f"Separate erification only for JESD3-C (.jed), {os.path.basename(file.name)} is XSVF; Cannot continue",
+        )
+        exit(89)
     else:
         output.error(
             "Failure", f"File type for {os.path.basename(file.name)}; Cannot continue"
@@ -72,8 +59,8 @@ def _process_input_jed(
         infile=file,
         output=output,
         erase=False,
-        program=True,
-        verify=False,
+        program=False,
+        verify=True,
     )
 
 

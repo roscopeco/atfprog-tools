@@ -15,7 +15,12 @@ from atfu.converter.device import (
 
 
 def jed2svf(
-    output: Output, device: str, infile: io.BufferedReader
+    output: Output,
+    device: str,
+    infile: io.BufferedReader,
+    erase: bool,
+    verify: bool,
+    program: bool,
 ) -> io.BufferedReader:
     output.output(2, "Converting JED to SVF...")
 
@@ -63,7 +68,15 @@ def jed2svf(
         svf_bits = c_device.jed_to_svf(jed_bits)
 
     outfile = tempfile.NamedTemporaryFile(prefix="atfu-temp-", suffix=".svf", mode="w+")
-    write_svf(outfile, svf_bits, c_device, comment=comment)
+    write_svf(
+        outfile,
+        svf_bits,
+        c_device,
+        comment=comment,
+        erase=erase,
+        verify=verify,
+        program=program,
+    )
 
     outfile.seek(0)
     return outfile
