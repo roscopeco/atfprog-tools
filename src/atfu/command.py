@@ -170,7 +170,7 @@ def _arg_parser():
         "filename",
         nargs="+",
         type=argparse.FileType("rb"),
-        help=".jed, .svf or .xsvf file(s) to verify against",
+        help=".jed file(s) to verify against",
     )
     verify.set_defaults(func=atfu.verify.handler)
 

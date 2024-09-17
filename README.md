@@ -165,7 +165,7 @@ verification would be encoded into the vectors themselves.
 atfu verify [-h] [-d {ATF1502,ATF1504,ATF1508,ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}] [-p PROGRAMMER] filename [filename ...]
 
 positional arguments:
-  filename              .jed, .svf or .xsvf file(s) to verify against
+  filename              .jed file(s) to verify against
 
 options:
   -h, --help            show this help message and exit
