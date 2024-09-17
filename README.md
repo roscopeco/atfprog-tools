@@ -154,6 +154,27 @@ options:
                         Device to check (default: ATF1502AS)
 ```
 
+#### Verify mode
+
+This mode is used to verify the contents of an ATF150x device against a JESD3-C (.jed) file.
+
+**Verification cannot be performed against SVF or XSVF files**. The expectation for those is that
+verification would be encoded into the vectors themselves.
+
+```
+atfu verify [-h] [-d {ATF1502,ATF1504,ATF1508,ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}] [-p PROGRAMMER] filename [filename ...]
+
+positional arguments:
+  filename              .jed, .svf or .xsvf file(s) to verify against
+
+options:
+  -h, --help            show this help message and exit
+  -d {ATF1502,ATF1504,ATF1508,ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502,ATF1504,ATF1508,ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
+                        Device to verify (default: ATF1502AS)
+  -p PROGRAMMER, --programmer PROGRAMMER
+                        Programmer device (default: /dev/cu.usbmodem14101)
+```
+
 #### Programmer mode
 
 This mode can be used to list detected programmer boards, and query them.
