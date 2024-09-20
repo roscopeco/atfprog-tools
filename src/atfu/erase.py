@@ -1,6 +1,7 @@
 from atfu.little_board.jtag_programmer import JtagProgrammer
 from atfu.standard_vectors import OP_ERASE, find_vector_file
 from atfu.output import Output
+from atfu.device_id import check_chip_id
 
 
 def handler(args):
@@ -9,11 +10,16 @@ def handler(args):
 
 def perform_erase(args, no_success=True) -> int:
     output = Output(args)
+
     vector_path = find_vector_file(OP_ERASE, args.device)
 
     if vector_path is None:
         output.error("Failure", f"{args.device} is not a recognised device.")
         return 10
+
+    if not check_chip_id(args, output):
+        output.error(args.device, "not found, please check device type and connection")
+        return 1
 
     try:
         vector_fd = vector_path.open("rb")

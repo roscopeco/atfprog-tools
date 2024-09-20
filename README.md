@@ -74,13 +74,15 @@ atfu [-h] [--version] [-q] [-v] [-t] {program,erase,check,programmer} ...
 Little ATF150x Programmer Board Utility
 
 positional arguments:
-  {program,erase,check,programmer}
+  {scan,program,erase,check,verify,programmer}
+    scan                Scan for ATF150x devices
     program             Program an ATF150x device
     erase               Erase an ATF150x device
     check               Check if an ATF150x device is blank
+    verify              Verify an ATF150x device
     programmer          Little ATF150x Programmer Board device functions
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
   -q, --quiet           Silence almost all output
@@ -88,6 +90,33 @@ optional arguments:
   -t, --trace           Enable debugging output (can be noisy!)
 ```
 
+#### Device scan mode
+
+This mode is used to scan the connected ATF CPLD, and try to autodetect the specific
+type of the chip.
+
+By default, the first detected programmer will be used. This can be changed
+with the `-p` option.
+
+The `-n` option can be used to obtain unadorned output. This can be useful for
+passing to other commands, or to `atfu` itself if you want to work with whatever
+device is detected, e.g.
+
+```shell
+atfu program -d $(atfu scan -n) my_file.jed
+```
+
+Usage: 
+
+```
+atfu scan [-h] [-n] [-p PROGRAMMER]
+
+options:
+  -h, --help            show this help message and exit
+  -n, --plain           Plain output, only the unadorned device name, no newline
+  -p PROGRAMMER, --programmer PROGRAMMER
+                        Programmer device (default: <detected>)
+```
 #### Program mode
 
 This mode is used to program JEDEC, SVF or XSVF files to an ATF150x device.
@@ -112,7 +141,7 @@ options:
   -d {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
                         Device to program (default: ATF1502AS)
   -p PROGRAMMER, --programmer PROGRAMMER
-                        Programmer device (default: /dev/cu.usbmodem14301)
+                        Programmer device (default: <detected>)
 ```
 
 #### Erase mode
@@ -120,16 +149,20 @@ options:
 This mode is used to erase an ATF150x device, and can also be used to 
 force erase JTAG-locked or secured devices.
 
-> **Note** that the force mode might be... _stressful_ for your device.
+By default, the first detected programmer will be used. This can be changed
+with the `-p` option.
+
+> **Note** that the force mode might be... _stressful_ for your device, 
+> so try a regular erase first :)
 
 ```
-usage: atfu erase [-h] [-f] [-p PROGRAMMER] [-d {ATF1502,ATF1504,ATF1508}]
+atfu erase [-h] [-f] [-p PROGRAMMER] [-d {ATF1502,ATF1504,ATF1508}]
 
 options:
   -h, --help            show this help message and exit
   -f, --force           Force erase
   -p PROGRAMMER, --programmer PROGRAMMER
-                        Programmer device (default: /dev/cu.usbmodem14301)
+                        Programmer device (default: <detected>)
   -d {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
                         Device to erase (default: ATF1502AS)
 ```
@@ -138,10 +171,8 @@ options:
 
 This mode is used to determine whether an ATF150x device is blank.
 
-> **Note** Devices that cannot be communicated with will show up as `not blank`.
-> In practice, this will always be either faulty, JTAG-locked or secured devices.
-> For the former, it doesn't matter if they're blank or not, and for the latter,
-> well, it's not possible for them to be blank anyhow...
+By default, the first detected programmer will be used. This can be changed
+with the `-p` option.
 
 ```
 atfu check [-h] [-p PROGRAMMER] [-d {ATF1502,ATF1504,ATF1508}]
@@ -149,7 +180,7 @@ atfu check [-h] [-p PROGRAMMER] [-d {ATF1502,ATF1504,ATF1508}]
 options:
   -h, --help            show this help message and exit
   -p PROGRAMMER, --programmer PROGRAMMER
-                        Programmer device (default: /dev/cu.usbmodem14301)
+                        Programmer device (default: <detected>)
   -d {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
                         Device to check (default: ATF1502AS)
 ```
@@ -157,6 +188,9 @@ options:
 #### Verify mode
 
 This mode is used to verify the contents of an ATF150x device against a JESD3-C (.jed) file.
+
+By default, the first detected programmer will be used. This can be changed
+with the `-p` option.
 
 **Verification cannot be performed against SVF or XSVF files**. The expectation for those is that
 verification would be encoded into the vectors themselves.
@@ -172,7 +206,7 @@ options:
   -d {ATF1502,ATF1504,ATF1508,ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}, --device {ATF1502,ATF1504,ATF1508,ATF1502AS,ATF1504AS,ATF1508AS,ATF1502ASV,ATF1504ASV,ATF1508ASV}
                         Device to verify (default: ATF1502AS)
   -p PROGRAMMER, --programmer PROGRAMMER
-                        Programmer device (default: /dev/cu.usbmodem14101)
+                        Programmer device (default: <detected>)
 ```
 
 #### Programmer mode
@@ -194,8 +228,8 @@ atfu programmer list [-h] [--plain]
 Functions for listing connected programmers
 
 options:
-  -h, --help  show this help message and exit
-  --plain     Display a plain list of device paths
+  -h, --help   show this help message and exit
+  -n, --plain  Display a plain list of device paths
 ```
 
 ### Copyright

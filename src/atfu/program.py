@@ -7,6 +7,7 @@ from atfu.output import Output, cbYellow, cReset
 from atfu.little_board.jtag_programmer import JtagProgrammer
 from atfu.converter.jed2svf import jed2svf
 from atfu.converter.svf2xsvf import svf2xsvf
+from atfu.device_id import check_chip_id
 
 
 def handler(args):
@@ -16,6 +17,10 @@ def handler(args):
         erase_result = atfu.erase.perform_erase(args, no_success=False)
         if erase_result != 0:
             exit(erase_result)
+
+    if not check_chip_id(args, output):
+        output.error(args.device, "not found, please check device type and connection")
+        return 1
 
     will_verify = not args.noverify and True not in (
         bool(re.search(r"[Xx]?[Ss][Vv][Ff]$", fn.name)) for fn in args.filename

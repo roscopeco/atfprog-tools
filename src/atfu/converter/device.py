@@ -4,7 +4,15 @@ import enum
 from bitarray import bitarray
 
 
-__all__ = ["ATF15xxInstr", "ATF1502ASDevice", "ATF1504ASDevice", "ATF1508ASDevice"]
+__all__ = [
+    "ATF15xxInstr",
+    "ATF1502ASDevice",
+    "ATF1504ASDevice",
+    "ATF1508ASDevice",
+    "ATF1502ASVDevice",
+    "ATF1504ASVDevice",
+    "ATF1508ASVDevice",
+]
 
 
 class ATF15xxInstr(enum.IntEnum):
@@ -453,3 +461,20 @@ class ATF1508ASVDevice(ATF15xxDevice):
         if svf_row == 768:
             return 74118 + (15 - svf_col)
         assert False
+
+
+def device_from_str(device: str) -> type[ATF15xxDevice]:
+    if device == "ATF1502AS" or device == "ATF1502":
+        return ATF1502ASDevice
+    elif device == "ATF1504AS" or device == "ATF1504":
+        return ATF1504ASDevice
+    elif device == "ATF1508AS" or device == "ATF1508":
+        return ATF1508ASDevice
+    elif device == "ATF1502ASV":
+        return ATF1502ASVDevice
+    elif device == "ATF1504ASV":
+        return ATF1504ASVDevice
+    elif device == "ATF1508ASV":
+        return ATF1508ASVDevice
+    else:
+        return None

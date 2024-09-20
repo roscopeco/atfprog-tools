@@ -1,6 +1,7 @@
 import io
 import tempfile
 from atfu.output import Output
+from atfu.converter.device import device_from_str
 from atfu.converter.fuseconv import read_jed, write_svf
 from atfu.converter.device import (
     ATF1502ASDevice,
@@ -29,19 +30,8 @@ def jed2svf(
     infile.close()
     infile = open(inname, "r")
 
-    if device == "ATF1502AS" or device == "ATF1502":
-        c_device = ATF1502ASDevice
-    elif device == "ATF1504AS" or device == "ATF1504":
-        c_device = ATF1504ASDevice
-    elif device == "ATF1508AS" or device == "ATF1508":
-        c_device = ATF1508ASDevice
-    elif device == "ATF1502ASV":
-        c_device = ATF1502ASVDevice
-    elif device == "ATF1504ASV":
-        c_device = ATF1504ASVDevice
-    elif device == "ATF1508ASV":
-        c_device = ATF1508ASVDevice
-    else:
+    c_device = device_from_str(device)
+    if c_device is None:
         output.error(
             "Bug",
             f"Incorrect device string {device} passed in jed2svf; Please report: https://github.com/roscopeco/atfprog-tools/issues",

@@ -2,7 +2,7 @@ import argparse
 import serial
 
 import sure
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from atfu.erase import perform_erase
 
@@ -37,11 +37,12 @@ def test_erase_perform_erase_unrecognised_device():
     result.should.be.equal_to(10)
 
 
-@patch("atfu.erase.JtagProgrammer")
-def test_erase_perform_erase_valid_device_erase_ok(mock_prog):
-    prog_inst = mock_prog.return_value
-    prog_inst.upload_one_file.return_value = True
-
+@patch.multiple(
+    "atfu.check.JtagProgrammer",
+    upload_all_files=MagicMock(return_value=True),
+    upload_one_file=MagicMock(return_value=True),
+)
+def test_erase_perform_erase_valid_device_erase_ok():
     args = argparse.Namespace(
         quiet=False,
         trace=False,
@@ -56,11 +57,12 @@ def test_erase_perform_erase_valid_device_erase_ok(mock_prog):
     result.should.be.equal_to(0)
 
 
-@patch("atfu.erase.JtagProgrammer")
-def test_erase_perform_erase_valid_device_erase_fails(mock_prog):
-    prog_inst = mock_prog.return_value
-    prog_inst.upload_one_file.return_value = False
-
+@patch.multiple(
+    "atfu.check.JtagProgrammer",
+    upload_all_files=MagicMock(return_value=True),
+    upload_one_file=MagicMock(return_value=False),
+)
+def test_erase_perform_erase_valid_device_erase_fails():
     args = argparse.Namespace(
         quiet=False,
         trace=False,
@@ -75,11 +77,12 @@ def test_erase_perform_erase_valid_device_erase_fails(mock_prog):
     result.should.be.equal_to(1)
 
 
-@patch("atfu.erase.JtagProgrammer")
-def test_erase_perform_erase_valid_device_force_erase_fails_fails(mock_prog):
-    prog_inst = mock_prog.return_value
-    prog_inst.upload_one_file.return_value = False
-
+@patch.multiple(
+    "atfu.check.JtagProgrammer",
+    upload_all_files=MagicMock(return_value=True),
+    upload_one_file=MagicMock(return_value=False),
+)
+def test_erase_perform_erase_valid_device_force_erase_fails_fails():
     args = argparse.Namespace(
         quiet=False,
         trace=False,
@@ -94,11 +97,12 @@ def test_erase_perform_erase_valid_device_force_erase_fails_fails(mock_prog):
     result.should.be.equal_to(1)
 
 
-@patch("atfu.erase.JtagProgrammer")
-def test_erase_perform_erase_valid_device_force_erase_fails_succeeds(mock_prog):
-    prog_inst = mock_prog.return_value
-    prog_inst.upload_one_file.side_effect = [False, True]
-
+@patch.multiple(
+    "atfu.check.JtagProgrammer",
+    upload_all_files=MagicMock(return_value=True),
+    upload_one_file=MagicMock(side_effect=[False, True]),
+)
+def test_erase_perform_erase_valid_device_force_erase_fails_succeeds():
     args = argparse.Namespace(
         quiet=False,
         trace=False,
@@ -111,3 +115,23 @@ def test_erase_perform_erase_valid_device_force_erase_fails_succeeds(mock_prog):
     result = perform_erase(args)
 
     result.should.be.equal_to(0)
+
+
+@patch.multiple(
+    "atfu.check.JtagProgrammer",
+    upload_all_files=MagicMock(return_value=False),
+    upload_one_file=MagicMock(return_value=True),
+)
+def test_check_perform_erase_invalid_device():
+    args = argparse.Namespace(
+        quiet=False,
+        trace=False,
+        verbose=False,
+        force=True,
+        programmer="/dev/programmer",
+        device="ATF1502",
+    )
+
+    result = perform_erase(args)
+
+    result.should.be.equal_to(1)
