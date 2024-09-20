@@ -36,7 +36,7 @@ def handler(args):
         exit(0)
 
 
-def check_chip_id(args: any, output: Output, device: str | None = None) -> bool:
+def check_chip_id(args: any, output: Output, device: str = None) -> bool:
     if device is None:
         device = args.device
 
@@ -79,7 +79,7 @@ def check_chip_id(args: any, output: Output, device: str | None = None) -> bool:
     return prog.upload_all_files([temp_xsvf])
 
 
-def scan_device(args: any, output: Output) -> str | None:
+def scan_device(args: any, output: Output) -> str:
     if check_chip_id(args, output, "ATF1502AS"):
         return "ATF1502AS"
     if check_chip_id(args, output, "ATF1504AS"):

@@ -463,7 +463,7 @@ class ATF1508ASVDevice(ATF15xxDevice):
         assert False
 
 
-def device_from_str(device: str) -> type[ATF15xxDevice] | None:
+def device_from_str(device: str) -> type[ATF15xxDevice]:
     if device == "ATF1502AS" or device == "ATF1502":
         return ATF1502ASDevice
     elif device == "ATF1504AS" or device == "ATF1504":
