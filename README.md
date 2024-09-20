@@ -87,7 +87,8 @@ options:
   --version             show program's version number and exit
   -q, --quiet           Silence almost all output
   -v, --verbose         Allow additional output
-  -t, --trace           Enable debugging output (can be noisy!)```
+  -t, --trace           Enable debugging output (can be noisy!)
+```
 
 #### Device scan mode
 
