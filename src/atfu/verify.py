@@ -5,6 +5,7 @@ from atfu.output import Output
 from atfu.little_board.jtag_programmer import JtagProgrammer
 from atfu.converter.jed2svf import jed2svf
 from atfu.converter.svf2xsvf import svf2xsvf
+from atfu.device_id import check_chip_id
 
 
 def handler(args):
@@ -14,12 +15,19 @@ def handler(args):
 def perform_verify(args):
     output = Output(args)
 
-    prog = JtagProgrammer("VERIFY", args.programmer, output.verbosity())
+    if not check_chip_id(args, output):
+        output.error(args.device, "not found, please check device type and connection")
+        return 1
+
+    prog = JtagProgrammer("VERIFY", args.programmer, output.verbosity(), no_fail=True)
 
     xsvf_files = _process_input_files(args.device, args.filename, output)
+
     if prog.upload_all_files(xsvf_files):
+        output.success(args.device, "verified successfully")
         return 0
     else:
+        output.error(args.device, "verification failed")
         return 1
 
 

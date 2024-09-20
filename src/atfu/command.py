@@ -1,5 +1,6 @@
 import argparse
 
+import atfu.device_id
 import atfu.program
 import atfu.erase
 import atfu.check
@@ -37,6 +38,22 @@ def _arg_parser():
     )
 
     subs = parser.add_subparsers(dest="{program,erase,check,programmer}", required=True)
+
+    # Scan
+    scan = subs.add_parser("scan", help=f"Scan for ATF150x devices")
+    scan.add_argument(
+        "-n",
+        "--plain",
+        action="store_true",
+        help="Plain output, only the unadorned device name, no newline",
+    )
+    scan.add_argument(
+        "-p",
+        "--programmer",
+        default=atfu.programmer.default_programmer_path(),
+        help="Programmer device (default: %(default)s)",
+    )
+    scan.set_defaults(func=atfu.device_id.handler)
 
     # Program
     program = subs.add_parser("program", help="Program an ATF150x device")
@@ -183,7 +200,10 @@ def _arg_parser():
         "list", description="Functions for listing connected programmers"
     )
     programmer_list.add_argument(
-        "--plain", action="store_true", help="Display a plain list of device paths"
+        "-n",
+        "--plain",
+        action="store_true",
+        help="Display a plain list of device paths",
     )
     programmer_list.set_defaults(func=atfu.programmer.handle_list)
 
