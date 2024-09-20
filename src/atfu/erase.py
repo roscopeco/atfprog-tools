@@ -11,15 +11,15 @@ def handler(args):
 def perform_erase(args, no_success=True) -> int:
     output = Output(args)
 
-    if not check_chip_id(args, output):
-        output.error(args.device, "not found, please check device type and connection")
-        return 1
-
     vector_path = find_vector_file(OP_ERASE, args.device)
 
     if vector_path is None:
         output.error("Failure", f"{args.device} is not a recognised device.")
         return 10
+
+    if not check_chip_id(args, output):
+        output.error(args.device, "not found, please check device type and connection")
+        return 1
 
     try:
         vector_fd = vector_path.open("rb")
