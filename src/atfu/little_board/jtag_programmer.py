@@ -40,10 +40,11 @@ class JtagProgrammer(object):
         no_filename=False,
         no_fail=False,
         no_success=False,
+        reuse_serial=None,
     ):
         self._operation = operation
         self._device = device
-        self._serial = None
+        self._serial = reuse_serial
         self._need_lf = False
         self._file_size = 0
         self._sum = 0
@@ -62,6 +63,9 @@ class JtagProgrammer(object):
         self._serial.flushOutput()
         self._serial.write(mode)
         self._start_time = 0
+
+    def serial(self):
+        return self._serial
 
     def print_lf(self):
         if self._need_lf:

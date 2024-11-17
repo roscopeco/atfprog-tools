@@ -39,7 +39,9 @@ def handler(args):
                     f"{cbYellow}Warning{cReset} Verification specified, but skipped due to SVF/XSVF input file",
                 )
             else:
-                verify_result = atfu.verify.perform_verify(args)
+                verify_result = atfu.verify.perform_verify(
+                    args, reuse_serial=prog.serial()
+                )
                 if verify_result != 0:
                     exit(verify_result)
 

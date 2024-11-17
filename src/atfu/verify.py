@@ -12,14 +12,20 @@ def handler(args):
     exit(perform_verify(args))
 
 
-def perform_verify(args):
+def perform_verify(args, reuse_serial=None):
     output = Output(args)
 
     if not check_chip_id(args, output):
         output.error(args.device, "not found, please check device type and connection")
         return 1
 
-    prog = JtagProgrammer("VERIFY", args.programmer, output.verbosity(), no_fail=True)
+    prog = JtagProgrammer(
+        "VERIFY",
+        args.programmer,
+        output.verbosity(),
+        no_fail=True,
+        reuse_serial=reuse_serial,
+    )
 
     xsvf_files = _process_input_files(args.device, args.filename, output)
 
