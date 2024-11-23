@@ -8,7 +8,7 @@ def handler(args):
     exit(perform_check(args))
 
 
-def perform_check(args) -> int:
+def perform_check(args, reuse_serial=None) -> int:
     output = Output(args)
 
     vector_path = find_vector_file(OP_CHECK, args.device)
@@ -28,7 +28,7 @@ def perform_check(args) -> int:
         )
         return 2
 
-    if not check_chip_id(args, output):
+    if not check_chip_id(args, output, reuse_serial=reuse_serial):
         output.error(args.device, "not found, please check device type and connection")
         return 1
 
@@ -39,6 +39,7 @@ def perform_check(args) -> int:
         no_filename=True,
         no_success=True,
         no_fail=True,
+        reuse_serial=reuse_serial,
     )
 
     if prog.upload_one_file(vector_fd):
