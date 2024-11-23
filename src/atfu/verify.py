@@ -15,7 +15,7 @@ def handler(args):
 def perform_verify(args, reuse_serial=None):
     output = Output(args)
 
-    if not check_chip_id(args, output):
+    if not check_chip_id(args, output, reuse_serial=reuse_serial):
         output.error(args.device, "not found, please check device type and connection")
         return 1
 

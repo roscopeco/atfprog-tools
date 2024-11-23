@@ -2,7 +2,6 @@ import tempfile
 
 from atfu.output import Output, cbYellow, cReset
 from atfu.little_board.jtag_programmer import JtagProgrammer
-from atfu.converter.jed2svf import jed2svf
 from atfu.converter.svf2xsvf import svf2xsvf
 from atfu.converter.fuseconv import write_svf
 from atfu.converter.device import device_from_str
@@ -36,7 +35,9 @@ def handler(args):
         exit(0)
 
 
-def check_chip_id(args: any, output: Output, device: str = None) -> bool:
+def check_chip_id(
+    args: any, output: Output, device: str = None, reuse_serial=None
+) -> bool:
     if device is None:
         device = args.device
 
@@ -74,23 +75,24 @@ def check_chip_id(args: any, output: Output, device: str = None) -> bool:
         no_success=True,
         no_fail=True,
         no_filename=True,
+        reuse_serial=reuse_serial,
     )
 
     return prog.upload_all_files([temp_xsvf])
 
 
-def scan_device(args: any, output: Output) -> str:
-    if check_chip_id(args, output, "ATF1502AS"):
+def scan_device(args: any, output: Output, reuse_serial=None) -> str:
+    if check_chip_id(args, output, "ATF1502AS", reuse_serial=reuse_serial):
         return "ATF1502AS"
-    if check_chip_id(args, output, "ATF1504AS"):
+    if check_chip_id(args, output, "ATF1504AS", reuse_serial=reuse_serial):
         return "ATF1504AS"
-    if check_chip_id(args, output, "ATF1508AS"):
+    if check_chip_id(args, output, "ATF1508AS", reuse_serial=reuse_serial):
         return "ATF1508AS"
-    if check_chip_id(args, output, "ATF1502ASV"):
+    if check_chip_id(args, output, "ATF1502ASV", reuse_serial=reuse_serial):
         return "ATF1502ASV"
-    if check_chip_id(args, output, "ATF1504ASV"):
+    if check_chip_id(args, output, "ATF1504ASV", reuse_serial=reuse_serial):
         return "ATF1504ASV"
-    if check_chip_id(args, output, "ATF1508ASV"):
+    if check_chip_id(args, output, "ATF1508ASV", reuse_serial=reuse_serial):
         return "ATF1508ASV"
 
     return None
