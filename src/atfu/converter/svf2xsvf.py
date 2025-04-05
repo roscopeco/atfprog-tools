@@ -205,7 +205,6 @@ class ParseError(Exception):
         self.message = message
 
     def __str__(self):
-        global inputFilename
         return "Error in file '%s' at line %d near token %s\n %s" % (
             inputFilename,
             self.linenumber,
@@ -284,7 +283,6 @@ def makeBitArray(hexString, bitCount):
     then just before returning we reverse the array. This way the append()
     method can be used, which I assume is faster than an insert.
     """
-    global tokLn
     a = bytearray()
     length = bitCount
     hexString = list(hexString)
