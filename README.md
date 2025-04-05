@@ -238,7 +238,7 @@ options:
 
 ### Copyright
 
-Copyright ©2024 [The Really Old-School Company Limited](https://rosco_m68k.com).
+Copyright ©2024-2025 [The Really Old-School Company Limited](https://rosco-m68k.com).
 
 Portions Copyright (C) 2019-2020 whitequark@whitequark.org
 
