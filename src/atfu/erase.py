@@ -17,9 +17,14 @@ def perform_erase(args, no_success=True, reuse_serial=None) -> int:
         output.error("Failure", f"{args.device} is not a recognised device.")
         return 10
 
-    if not check_chip_id(args, output, reuse_serial=reuse_serial):
-        output.error(args.device, "not found, please check device type and connection")
-        return 1
+    if args.force:
+        output.warn(args.device, "assumed correct; cannot check when force-erasing")
+    else:
+        if not check_chip_id(args, output, reuse_serial=reuse_serial):
+            output.error(
+                args.device, "not found, please check device type and connection"
+            )
+            return 1
 
     try:
         vector_fd = vector_path.open("rb")

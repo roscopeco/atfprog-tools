@@ -122,7 +122,27 @@ def test_erase_perform_erase_valid_device_force_erase_fails_succeeds():
     upload_all_files=MagicMock(return_value=False),
     upload_one_file=MagicMock(return_value=True),
 )
-def test_check_perform_erase_invalid_device():
+def test_check_perform_erase_invalid_device_no_force():
+    args = argparse.Namespace(
+        quiet=False,
+        trace=False,
+        verbose=False,
+        force=False,
+        programmer="/dev/programmer",
+        device="ATF1502",
+    )
+
+    result = perform_erase(args)
+
+    result.should.be.equal_to(1)
+
+
+@patch.multiple(
+    "atfu.check.JtagProgrammer",
+    upload_all_files=MagicMock(return_value=False),
+    upload_one_file=MagicMock(return_value=True),
+)
+def test_check_perform_erase_invalid_device_force():
     args = argparse.Namespace(
         quiet=False,
         trace=False,
@@ -134,4 +154,4 @@ def test_check_perform_erase_invalid_device():
 
     result = perform_erase(args)
 
-    result.should.be.equal_to(1)
+    result.should.be.equal_to(0)  # Cannot check device is valid when force=True
