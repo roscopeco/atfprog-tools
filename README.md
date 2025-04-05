@@ -28,6 +28,10 @@ Prerequisites:
   * If not, it can be installed with your package manager
   * Windows users can download from https://www.python.org/downloads/windows
   * `python` and `pip` should be in your `PATH` for easiest installation experience
+ 
+For **Windows users**, here's a video showing the installation steps:
+
+[![YouTube](http://i.ytimg.com/vi/Sf5hEsiIIDw/hqdefault.jpg)](https://www.youtube.com/watch?v=Sf5hEsiIIDw)
 
 > **Note**: on some systems, your `python` may instead be named `python3`, with `pip`
 > being similarly named `pip3`. As long as Python is version 3.9 or higher 
